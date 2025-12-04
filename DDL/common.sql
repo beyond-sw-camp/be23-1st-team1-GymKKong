@@ -28,7 +28,8 @@ CREATE TABLE trainer (
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
-  phone_num VARCHAR(255)
+  phone_num VARCHAR(255),
+  status ENUM('Y','N') NOT NULL DEFAULT 'N'
 );
 
 -- 강습실
