@@ -2,13 +2,14 @@
 
 | 이지연 | 정명진 | 황주완 |
 | --- | --- | --- |
-| <img src={} alt={}\> | <img src={} alt={}\> | <img src={} alt={}\> |
+| <img src="src/assets/img/jy_profile_img.png" alt="이지연" width="120" /> | <img src="src/assets/img/mj_profile_img.png" alt="정명진" width="120" /> | <img src="src/assets/img/jw_profile_img.png" alt="황주완" width="120" /> |
+
 
 ***
 
 ## 프로젝트 개요
 
-<img src={} alt={}\>  
+<img src="src/assets/img/gymkkong_img.png" alt='짐꽁'>  
 피트니스 센터의 지점, 회원, 트레이너 정보를 통합 관리하는 **수업 예약·출석·결제 관리 시스템**입니다.  
 회원·트레이너·관리자(지점 담당자)가 하나의 플랫폼에서 예약, 출석, 결제·환불, 커뮤니케이션을 편리하게 처리할 수 있도록 돕는 것을 목표로 합니다.
 
