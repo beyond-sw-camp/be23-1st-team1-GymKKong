@@ -19,7 +19,7 @@ create table payment(id bigint primary key auto_increment, membership_id bigint 
 --refund
 create table refund(id bigint primary key auto_increment, payment_id bigint not null, refund_price bigint not null, refund_day datetime default current_timestamp() not null,  foreign key(payment_id) References payment(id) );
 --place_trainer
-create table place_trainer(id bigint primary key auto_increment, place_id bigint not null,  trainer_id bigint not null, foreign key(place_id)  place(id), foreign key(trainer_id) References trainer(id));
+create table place_trainer(id bigint primary key auto_increment, place_id bigint not null,  trainer_id bigint not null,status ENUM('Y','N') NOT NULL DEFAULT 'N', foreign key(place_id)  place(id), foreign key(trainer_id) References trainer(id));
 --room_reserve
 create table room_reserve(id bigint primary key auto_increment, place_trainer_id bigint not null,  room_id bigint not null, start_time datetime not null, foreign key(place_trainer_id) References place_trainer(id), foreign key(room_id) References room(id));
 --post
