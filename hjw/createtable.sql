@@ -12,7 +12,8 @@ CREATE TABLE member
     phone_num VARCHAR(255),
     age       VARCHAR(255),
     gender    ENUM ('m','f'),
-    grade     ENUM ('BRONZE','GOLD','DIAMOND')
+    grade     ENUM ('BRONZE','GOLD','DIAMOND'),
+    status ENUM('ACTIVE','INACTTIVE') NOT NULL DEFAULT 'ACTIVE'
 );
 
 -- 지점 테이블 생성
@@ -29,7 +30,8 @@ CREATE TABLE trainer
     id        BIGINT AUTO_INCREMENT PRIMARY KEY,
     name      VARCHAR(255) NOT NULL,
     email     VARCHAR(255) NOT NULL UNIQUE,
-    phone_num VARCHAR(255)
+    phone_num VARCHAR(255) 
+    status ENUM('ACTIVE','INACTTIVE') NOT NULL DEFAULT 'ACTIVE'
 );
 
 -- 강습실 테이블 생성
@@ -115,8 +117,8 @@ create table place_trainer
 (
     id         bigint primary key auto_increment,
     place_id   bigint         not null,
-    trainer_id bigint         not null,
-    status     ENUM ('Y','N') NOT NULL DEFAULT 'N',
+    trainer_id bigint         not null,   
+    status ENUM('ACTIVE','INACTTIVE') NOT NULL DEFAULT 'ACTIVE',
     foreign key (place_id) place(id),
     foreign key (trainer_id) References trainer (id)
 );

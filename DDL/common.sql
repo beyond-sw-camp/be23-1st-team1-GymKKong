@@ -12,7 +12,7 @@ CREATE TABLE member (
   age VARCHAR(255),
   gender ENUM('m','f'),
   grade ENUM('BRONZE','GOLD','DIAMOND'),
-  status ENUM('Y','N') NOT NULL DEFAULT 'Y'
+  status ENUM('ACTIVE','INACTTIVE') NOT NULL DEFAULT 'ACTIVE'
 );
 
 -- 지점
@@ -29,7 +29,7 @@ CREATE TABLE trainer (
   email VARCHAR(255) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
   phone_num VARCHAR(255),
-  status ENUM('Y','N') NOT NULL DEFAULT 'N'
+  status ENUM('ACTIVE','INACTTIVE') NOT NULL DEFAULT 'ACTIVE'
 );
 
 -- 강습실
@@ -107,7 +107,7 @@ CREATE TABLE place_trainer (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   place_id BIGINT NOT NULL,
   trainer_id BIGINT NOT NULL,
-  status ENUM('Y','N') NOT NULL DEFAULT 'N',
+  status ENUM('ACTIVE','INACTTIVE') NOT NULL DEFAULT 'ACTIVE',
   FOREIGN KEY (place_id) REFERENCES place(id),
   FOREIGN KEY (trainer_id) REFERENCES trainer(id)
 );
