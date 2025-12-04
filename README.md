@@ -2,7 +2,8 @@
 
 | 이지연 | 정명진 | 황주완 |
 | --- | --- | --- |
-| <img src={src/assets/img/jy_frofile_img.png} alt={'이지연'}> | <img src={src/assets/img/mj_frofile_img.png} alt={'정명진'}> | <img src={src/assets/img/jw_frofile_img.png} alt={'황주완'}> |
+| <img src="src/assets/img/jy_frofile_img.png" alt="이지연" width="120" /> | <img src="src/assets/img/mj_frofile_img.png" alt="정명진" width="120" /> | <img src="src/assets/img/jw_frofile_img.png" alt="황주완" width="120" /> |
+
 
 ***
 
