@@ -56,6 +56,19 @@ CREATE TABLE class
     FOREIGN KEY (room_id) REFERENCES room (id)
 );
 
+-- 예약 테이블 생성
+CREATE TABLE class_reservation
+(
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    class_id   BIGINT NOT NULL,
+    member_id  BIGINT NOT NULL,
+    reserved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    cancel_YN  ENUM('Y','N') DEFAULT 'N',
+
+    FOREIGN KEY (class_id) REFERENCES class(id),
+    FOREIGN KEY (member_id) REFERENCES member(id)
+);
+
 -- 출석 테이블 생성
 CREATE TABLE attendance
 (
@@ -117,7 +130,8 @@ create table place_trainer
 (
     id         bigint primary key auto_increment,
     place_id   bigint         not null,
-    trainer_id bigint         not null,   
+    trainer_id bigint         not null,
+   
     status ENUM('ACTIVE','INACTTIVE') NOT NULL DEFAULT 'ACTIVE',
     foreign key (place_id) place(id),
     foreign key (trainer_id) References trainer (id)
@@ -170,4 +184,4 @@ create table admin
     type     enum ('admin', 'super_admin') default 'admin'
 );
 
--- 이메일 인증 후 비밀
+
