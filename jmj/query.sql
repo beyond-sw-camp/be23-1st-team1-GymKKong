@@ -433,3 +433,108 @@ END //
 DELIMITER ;
 
 CALL 강습생성(1, 2, 'PT Class', '2025-12-10 14:00:00', 10);
+
+--------------------------------------------------
+
+--post 댓글 조회
+SELECT 
+    c.id AS comment_id,
+    c.comment_contents,
+    c.comment_day,
+    c.place_trainer_id,
+    pt.trainer_id,
+    pt.place_id,
+    pt.status
+FROM coment c
+LEFT JOIN place_trainer pt 
+       ON pt.id = c.place_trainer_id
+       --조회할 post_id 
+WHERE c.post_id = 1  
+ORDER BY c.comment_day ASC;
+
+--댓글 작성 프로시져 
+DELIMITER //
+
+CREATE PROCEDURE 댓글작성1(
+    IN p_content TEXT,
+    IN p_member_id BIGINT,
+    IN p_place_trainer_id BIGINT,
+    IN p_board_id BIGINT
+)
+label_main: BEGIN   --  레이블 추가됨
+    DECLARE v_member_exists INT DEFAULT 0;
+    DECLARE v_trainer_exists INT DEFAULT 0;
+
+    START TRANSACTION;
+
+    -- 1. 둘 다 NULL → 오류
+    IF p_member_id IS NULL AND p_place_trainer_id IS NULL THEN
+        SELECT '오류: member_id 또는 place_trainer_id 중 하나는 반드시 입력해야 합니다.' AS message;
+        ROLLBACK;
+        LEAVE label_main;   --  레이블로 LEAVE
+    END IF;
+
+    -- 2. 둘 다 값 있음 → 오류
+    IF p_member_id IS NOT NULL AND p_place_trainer_id IS NOT NULL THEN
+        SELECT '오류: member와 trainer 둘 다 작성자가 될 수 없습니다.' AS message;
+        ROLLBACK;
+        LEAVE label_main;
+    END IF;
+
+    -- 3. member 검증
+    IF p_member_id IS NOT NULL THEN
+        SELECT COUNT(*) INTO v_member_exists
+        FROM member
+        WHERE id = p_member_id;
+
+        IF v_member_exists = 0 THEN
+            SELECT '오류: 존재하지 않는 member_id 입니다.' AS message;
+            ROLLBACK;
+            LEAVE label_main;
+        END IF;
+    END IF;
+
+    -- 4. place_trainer 검증
+    IF p_place_trainer_id IS NOT NULL THEN
+        SELECT COUNT(*) INTO v_trainer_exists
+        FROM place_trainer
+        WHERE id = p_place_trainer_id;
+
+        IF v_trainer_exists = 0 THEN
+            SELECT '오류: 존재하지 않는 place_trainer_id 입니다.' AS message;
+            ROLLBACK;
+            LEAVE label_main;
+        END IF;
+    END IF;
+
+    -- 5. 댓글 저장
+    INSERT INTO coment (comment_contents, comment_day, member_id, place_trainer_id, post_id)
+    VALUES (p_content, NOW(), p_member_id, p_place_trainer_id, p_board_id);
+
+    COMMIT;
+    SELECT '댓글 작성 완료' AS message;
+
+END label_main //   --레이블 닫기
+
+DELIMITER ;
+
+CALL 댓글작성1('내용', 3, NULL, 1); --member가 작성할때
+CALL 댓글작성1('트레이너 댓글', NULL, 1, 1); --p@_t@_가 작성할때
+
+
+
+---------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
