@@ -58,6 +58,8 @@ CREATE TABLE attendance (
   class_id BIGINT NOT NULL,
   member_id BIGINT NOT NULL,
   status ENUM('Y','N') DEFAULT 'N',
+  CONSTRAINT uq_attendance_class_member
+      UNIQUE (class_id, member_id),
   FOREIGN KEY (class_id) REFERENCES class(id),
   FOREIGN KEY (member_id) REFERENCES member(id)
 );
