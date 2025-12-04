@@ -23,8 +23,8 @@ create table place_trainer(id bigint primary key auto_increment, place_id bigint
 --room_reserve
 create table room_reserve(id bigint primary key auto_increment, place_trainer_id bigint not null,  room_id bigint not null, start_time datetime not null, foreign key(place_trainer_id) Reference place_trainer(id), foreign key(room_id) Reference room(id));
 --post
-create table post(id bigint primary key auto_increment, place_trainer_id bigint not null, title varchar(255) not null, post_contents varchar(255) not null, foreign key(place_trainer_id) Reference place_trainer(id));
+create table post(id bigint primary key auto_increment, place_trainer_id bigint not null, title varchar(255) not null, post_contents varchar(255) not null,  post_day datetime default current_timestamp() not null, foreign key(place_trainer_id) Reference place_trainer(id));
 --coment 
-create table coment(id bigint primary key auto_increment, post_id bigint, member_id bigint, comment_contents varchar(255) not null, foreign key(post_id) Reference post(id), foreign key(member_id) Reference member(id) );
+create table coment(id bigint primary key auto_increment, post_id bigint, member_id bigint, comment_contents varchar(255) not null, comment_day datetime default current_timestamp() not null, foreign key(post_id) Reference post(id), foreign key(member_id) Reference member(id) );
 --admin
 create table admin(id int primary key auto_increment, name varchar(255) not null, email varchar(255) not null, password varchar(255) not null, type enum('admin', 'super_admin') default 'admin'  );
