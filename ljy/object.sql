@@ -1,3 +1,31 @@
+-- 출석 전 상태의 예약 목록 확인 (날짜, 강습실, 트레이너 정보 포함)
+DELIMITER //
+CREATE PROCEDURE sp_예약_내역_조회 (
+    IN p_member_id BIGINT
+)
+BEGIN
+    SELECT
+        a.id        AS attendance_id,   -- 예약/출석 레코드 PK
+        c.id        AS class_id,
+        c.class_name,
+        c.start_time,
+        r.room_num,
+        pl.name     AS place_name,      -- 강습실이 속한 지점
+        t.name      AS trainer_name,
+        a.status    AS attendance_status
+    FROM attendance a
+    JOIN class   c  ON a.class_id = c.id
+    JOIN room    r  ON c.room_id = r.id
+    JOIN place   pl ON r.place_id = pl.id
+    JOIN trainer t  ON c.trainer_id = t.id
+    WHERE a.member_id = p_member_id
+      AND a.status    = 'N'           -- 아직 출석 처리 전
+      AND c.start_time > NOW()        -- 수업 시작 전
+    ORDER BY c.start_time;
+END //
+DELIMITER ;
+
+
 -- 선택한 지점(수강권 등록된 지점)의 게시글 목록 조회
 DELIMITER //
 CREATE PROCEDURE sp_지점별_게시판_조회(
