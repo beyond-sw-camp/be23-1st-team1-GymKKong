@@ -389,6 +389,17 @@ INSERT INTO refund (payment_id, refund_price, refund_day) VALUES
 ```
 </details> 
 
+<details>
+<summary>refund 데이터 삽입 (payment 참조)</summary>
+
+  ```sql
+INSERT INTO refund (payment_id, refund_price, refund_day) VALUES
+(1, 50000, '2024-11-15 10:00:00'),
+(2, 100000, '2024-11-20 15:30:00'),
+(3, 80000, '2024-11-25 13:45:00');
+```
+</details> 
+
 ### 테스트 케이스 실행
 <details>
 <summary>시스템 통합 SQL 스크립트 ([TEST] 테스트쿼리 | [PROC] 프로시저 | [VIEW] 뷰 | [SELECT] 조회쿼리 | [INSERT] 삽입쿼리 )</summary>
