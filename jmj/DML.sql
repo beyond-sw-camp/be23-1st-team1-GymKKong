@@ -46,10 +46,6 @@ VALUES (1, 1, 1, '좋은 정보 감사합니다!');
 INSERT INTO admin(id, name, email, password, type)
 VALUES (1, '관리자', 'admin@gym.com', '1234', 'admin');
 
-
-
-
-
 -- 1. 부모 테이블부터 삽입 (외래키 참조 없는 테이블)
 
 -- member 데이터 삽입
