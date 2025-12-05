@@ -62,7 +62,6 @@ CREATE TABLE class_reservation
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
     class_id   BIGINT NOT NULL,
     member_id  BIGINT NOT NULL,
-    reserved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     cancel_YN  ENUM('Y','N') DEFAULT 'N',
 
     FOREIGN KEY (class_id) REFERENCES class(id),
