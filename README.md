@@ -44,13 +44,13 @@
 ## 프로젝트 산출물
 
 ### 요구사항 정의서
-<img src="src/assets/img/" alt='요구사항 정의서' />
+<img src="src/assets/img/api.jpg" alt='요구사항 정의서' />
 
 ### WBS
-<img src="src/assets/img/" alt='WBS' />
+<img src="src/assets/img/WBS.jpg" alt='WBS' />
 
 ### ERD
-<img src="src/assets/img/" alt='ERD' />
+<img src="src/assets/img/erd.png" alt='ERD' />
 
 ***
 
