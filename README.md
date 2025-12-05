@@ -390,13 +390,13 @@ INSERT INTO refund (payment_id, refund_price, refund_day) VALUES
 </details> 
 
 <details>
-<summary>refund 데이터 삽입 (payment 참조)</summary>
+<summary>admin 데이터 삽입 (외래키 없음)</summary>
 
   ```sql
-INSERT INTO refund (payment_id, refund_price, refund_day) VALUES
-(1, 50000, '2024-11-15 10:00:00'),
-(2, 100000, '2024-11-20 15:30:00'),
-(3, 80000, '2024-11-25 13:45:00');
+INSERT INTO admin (name, email, password, type) VALUES
+('최관리자', 'admin.choi@gymkkong.com', 'hashed_password_123', 'super_admin'),
+('김매니저', 'manager.kim@gymkkong.com', 'hashed_password_456', 'admin'),
+('이스태프', 'staff.lee@gymkkong.com', 'hashed_password_789', 'admin');
 ```
 </details> 
 
