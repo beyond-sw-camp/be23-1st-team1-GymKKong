@@ -43,6 +43,9 @@
 
 ## 프로젝트 산출물
 
+- <a href="https://docs.google.com/spreadsheets/d/1NEbiscCO2ZXA2BI60zutTN66JqbDQYSuLrj9P9V-RkM/edit?gid=1452561464#gid=1452561464">🔗 [요구사항 정의서 및 WBS URL]</a>
+- <a href="https://www.erdcloud.com/d/p7SArbyYRbxc2d88M">🔗 [ERD cloud URL]</a>
+
 ### 요구사항 정의서
 <img src="src/assets/img/api.jpg" alt='요구사항 정의서' />
 
