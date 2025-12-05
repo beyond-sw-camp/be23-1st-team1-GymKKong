@@ -387,8 +387,9 @@ INSERT INTO comment (post_id, member_id, contents, comment_date) VALUES
 </details>
 
 ### 테스트 케이스 실행
+- ``[TEST] 테스트쿼리`` | ``[PROC] 프로시저`` | ``[VIEW] 뷰`` | ``[SELECT] 조회쿼리`` | ``[INSERT] 삽입쿼리``
 <details>
-<summary>시스템 통합 SQL 스크립트 (``[TEST] 테스트쿼리`` | ``[PROC] 프로시저`` | ``[VIEW] 뷰`` | ``[SELECT] 조회쿼리`` | ``[INSERT] 삽입쿼리`` )</summary>
+<summary>통합 SQL 스크립트</summary>
 
 ```sql
 -- [회원 기능] ========================================
