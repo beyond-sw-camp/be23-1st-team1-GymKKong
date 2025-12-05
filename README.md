@@ -1,5 +1,3 @@
-<div align="center">
-  
 ## 팀 소개
 
 | 이지연 | 정명진 | 황주완 |
@@ -46,13 +44,13 @@
 ## 프로젝트 산출물
 
 ### 요구사항 정의서
-<img src="src/assets/img/gymkkong_img.png" alt='요구사항 정의서' />
+<img src="src/assets/img/" alt='요구사항 정의서' />
 
 ### WBS
-<img src="src/assets/img/gymkkong_img.png" alt='WBS' />
+<img src="src/assets/img/" alt='WBS' />
 
 ### ERD
-<img src="src/assets/img/gymkkong_img.png" alt='ERD' />
+<img src="src/assets/img/" alt='ERD' />
 
 ***
 
@@ -238,7 +236,5 @@
 ### 샘플테이터 삽입
 
 ### 테스트 케이스 실행
-  
-</div>
 
 
