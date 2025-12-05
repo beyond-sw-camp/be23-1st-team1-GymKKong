@@ -409,6 +409,8 @@ BEGIN
 
     IF v_conflict_count > 0 THEN
         SELECT '예약 불가: 기존 예약과 시간이 겹칩니다.' AS message;
+         SIGNAL SQLSTATE '45000' 
+    SET MESSAGE_TEXT = '예약 불가: 기존 예약과 시간이 겹칩니다.';
     ELSE
         START TRANSACTION;
 
