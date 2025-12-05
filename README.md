@@ -1,18 +1,27 @@
 ## 팀 소개
 
+<div align='center'>
+
 | 이지연 | 정명진 | 황주완 |
 | --- | --- | --- |
 | <img src="src/assets/img/jy_profile_img.png" alt="이지연" width="120" /> | <img src="src/assets/img/mj_profile_img.png" alt="정명진" width="120" /> | <img src="src/assets/img/jw_profile_img.png" alt="황주완" width="120" /> |
 | <a href="https://github.com/jiyean99">🔗 [jiyean99]</a> | <a href="https://github.com/jmj010702">🔗 [jmj010702]</a> | <a href="https://github.com/hwangjwan">🔗 [hwangjwan]</a> |
+
+</div>
 
 
 ***
 
 ## 프로젝트 개요
 
+<div align='center'>
+
 <img src="src/assets/img/gymkkong_img.png" alt='짐꽁' height="360" />  <br/>
 피트니스 센터의 지점, 회원, 트레이너 정보를 통합 관리하는 <b>수업 예약·출석·결제 관리 시스템</b>입니다.<br/>
 회원·트레이너·관리자(지점 담당자)가 하나의 플랫폼에서 예약, 출석, 결제·환불, 커뮤니케이션을 편리하게 처리할 수 있도록 돕는 것을 목표로 합니다.
+
+</div>
+
 
 ***
 ## 스택
@@ -387,8 +396,9 @@ INSERT INTO comment (post_id, member_id, contents, comment_date) VALUES
 </details>
 
 ### 테스트 케이스 실행
+- ``[TEST] 테스트쿼리`` | ``[PROC] 프로시저`` | ``[VIEW] 뷰`` | ``[SELECT] 조회쿼리`` | ``[INSERT] 삽입쿼리``
 <details>
-<summary>시스템 통합 SQL 스크립트 ([TEST] 테스트쿼리 | [PROC] 프로시저 | [VIEW] 뷰 | [SELECT] 조회쿼리 | [INSERT] 삽입쿼리 )</summary>
+<summary>통합 SQL 스크립트</summary>
 
 ```sql
 -- [회원 기능] ========================================
@@ -1432,7 +1442,8 @@ ORDER BY 환불횟수 DESC;
 
 ### 정명진 
 > **잘한 점**  
-> - ``sp지점강습실_등록`` 쿼리의  where문에서 계산을 할 때 datetime형식의 컬럼들에  date_format 대신에 Interval 을 사용해 시간에 1시간을 더하여 기존에 있던 데이터들과 비교를 하는 형식으로 사용을 하였습니다. 만일 집계된 카운트가 1이상일 때는 기존 데이터들의 시간과 겹친다는 뜻이므로 signal sqlstate를  사용해 에러를 일으켜 프로시저문에서 탈출하게 만들었습니다.
+> - 시간이 겹칠 때 사용자가 겪을 불편을 미리 예상해 이를 사전에 막아 안정적인 흐름을 만들었습니다.  
+이 과정을 통해 전체 시스템의 흐름을 이해하고 판단하는 능력이 중요하다는 것을 배웠습니다.
 >   
 > **아쉬운 점**  
 > - 테이블 구조를 짤 때 정규화에만 몰두를 하여 조회를 해야 하는 쿼리에  너무 많은 조인이 걸려야 하는 문제점이 있습니다. 너무 많은 조인문으로 인해 코드의 가독성도 떨어져 자주 조회를 할 거 같은 데이터들은 해당 데이터들을 모아 테이블로 만들었어야 됐다고 생각을 합니다 
