@@ -74,7 +74,7 @@ WHERE m.member_id = 2;
 -- 환불 정책(잔여 상태, 사용 이력 등)에 따른 환불 절차 처리
 DELIMITER //
 
-CREATE PROCEDURE refund_membership(
+CREATE PROCEDURE 환불처리(
     IN p_membership_id BIGINT,                              -- 멤버쉽ID, 회원ID 매개변수로 받음
     IN p_member_id BIGINT
 )
@@ -105,7 +105,7 @@ call refund_membership(2, 1);
 
 -- 예약 가능한 수업 목록 조회 후 강좌 선택 및 예약
 DELIMITER //
-CREATE PROCEDURE get_available_classes(
+CREATE PROCEDURE 예약가능수업목록조회(
     IN p_place_id BIGINT
 )
 BEGIN
@@ -153,11 +153,11 @@ ORDER BY c.start_time;
 
 DELIMITER //
 
-CREATE PROCEDURE cancel_class_reservation(
+CREATE PROCEDURE 예약취소(
     IN p_reservation_id BIGINT,
     IN p_member_id BIGINT
 )
--- 수업 예약 취소
+                                                        -- 수업 예약 취소
 BEGIN
     DECLARE v_start_time DATETIME;
     START TRANSACTION;
