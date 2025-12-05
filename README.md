@@ -1417,3 +1417,12 @@ ORDER BY 환불횟수 DESC;
 ```
 </details> 
 
+***
+
+## 팀 회고
+
+| 이름 | 잘한 점 | 아쉬운 점 | 다음 프로젝트 다짐 |
+|-----|---------|-----------|--------------------|
+| **이지연** | - dummy <br/>-dummy | - dummy <br/>-dummy | - dummy <br/>-dummy |
+| **정명진** | - dummy <br/>-dummy | - dummy <br/>-dummy | - dummy <br/>-dummy |
+| **황주완** | - dummy <br/>-dummy | - dummy <br/>-dummy | - dummy <br/>-dummy |
