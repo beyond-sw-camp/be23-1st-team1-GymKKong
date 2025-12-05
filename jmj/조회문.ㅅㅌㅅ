@@ -1,0 +1,16 @@
+select * from admin;
+select * from attendance;
+select * from class;
+select * from coment;
+select * from member;
+select * from membership;
+select * from membership_option;
+select * from payment;
+select * from place;
+select * from place_trainer;
+select * from post;
+select * from refund;
+select * from room;
+select * from room_reserve;
+select * from trainer;
+
