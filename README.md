@@ -84,7 +84,7 @@ USE gymkkong;
 <details>
 <summary>👥 1. 계정 관련 테이블 (회원/트레이너/관리자)</summary>
 
-```
+```sql
 -- 회원
 CREATE TABLE member (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -122,7 +122,7 @@ CREATE TABLE admin (
 <details>
 <summary>🏪 2. 지점 및 시설 관리</summary>
 
-```
+```sql
 -- 지점
 CREATE TABLE place (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -153,7 +153,7 @@ CREATE TABLE place_trainer (
 <details>
 <summary>📚 3. 강습 및 예약 관리</summary>
 
-```
+```sql
 -- 강의 (수업)
 CREATE TABLE class (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -203,7 +203,7 @@ CREATE TABLE room_reserve (
 <details>
 <summary>💳 4. 이용권 및 결제관리</summary>
 
-```
+```sql
 -- 이용권 옵션
 CREATE TABLE membership_option (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -249,7 +249,7 @@ CREATE TABLE refund (
 <details>
 <summary>💬 5. 커뮤니티 (게시글/댓글)</summary>
 
-```
+```sql
 -- 게시글
 CREATE TABLE post (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -274,171 +274,116 @@ CREATE TABLE comment (
 </details>
 
 ### 샘플테이터 삽입
-<details>
-<summary>member 데이터 삽입</summary>
-  
-  ``` sql
-    INSERT INTO member (name, email, phone_num, age, gender, grade) VALUES
-  ('김철수', 'kim.scs@email.com', '010-1234-5678', '28', 'm', 'GOLD'),
-  ('이영희', 'lee.y2h@email.com', '010-2345-6789', '32', 'f', 'DIAMOND'),
-  ('박민수', 'park.m3s@email.com', '010-3456-7890', '25', 'm', 'BRONZE');
-  ```
-</details> 
 
 <details>
-<summary>place 데이터 삽입</summary>
+<summary>기본 데이터 (회원/지점/트레이너/관리자)</summary>
 
-  ``` sql
+```sql
+-- 회원
+INSERT INTO member (name, email, phone_num, age, gender, grade) VALUES
+('김철수', 'kim.scs@email.com', '010-1234-5678', '28', 'm', 'GOLD'),
+('이영희', 'lee.y2h@email.com', '010-2345-6789', '32', 'f', 'DIAMOND'),
+('박민수', 'park.m3s@email.com', '010-3456-7890', '25', 'm', 'BRONZE');
+
+-- 지점
 INSERT INTO place (name, address) VALUES
 ('짐꽁 강남점', '서울시 강남구 테헤란로 123'),
 ('짐꽁 홍대점', '서울시 마포구 양화로 456'),
 ('짐꽁 잠실점', '서울시 송파구 올림픽로 789');
-```
-</details> 
 
-<details>
-<summary>trainer 데이터 삽입</summary>
-
-  ```sql
+-- 트레이너
 INSERT INTO trainer (name, email, phone_num) VALUES
 ('최트레이너', 'choia.trainer@gymkkong.com', '010-1111-2222'),
 ('정코치', 'juang.coach@gymkkong.com', '010-3333-4444'),
 ('한선생', 'hana.teacher@gymkkong.com', '010-5555-6666');
-```
-</details> 
 
-<details>
-<summary>room 데이터 삽입 (place 참조)</summary>
-
-  ```sql
-INSERT INTO room (place_id, room_num) VALUES
-(1, 101),
-(1, 102),
-(2, 201);
-```
-</details> 
-
-<details>
-<summary>place_trainer 데이터 삽입 (place, trainer 참조)</summary>
-
-  ```sql
-INSERT INTO place_trainer (place_id, trainer_id, status) VALUES
-(1, 1, 'Y'),
-(1, 2, 'Y'),
-(2, 3, 'Y');
-```
-</details> 
-
-<details>
-<summary>class 데이터 삽입 (trainer, room 참조)</summary>
-
-  ```sql
-INSERT INTO class (trainer_id, room_id, class_name, start_time, capacity) VALUES
-(1, 1, '아침 요가 클래스', '2024-12-05 07:00:00', 15),
-(2, 2, '근력 운동 클래스', '2024-12-05 19:00:00', 10),
-(3, 3, '필라테스 클래스', '2024-12-05 10:00:00', 12);
-```
-
-</details> 
-
-<details>
-<summary>attendance 데이터 삽입 (class, member 참조)</summary>
-
-  ```sql
-INSERT INTO attendance (class_id, member_id, status) VALUES
-(1, 1, 'Y'),
-(1, 2, 'Y'),
-(2, 3, 'N');
-```
-</details> 
-
-<details>
-<summary>membership_option 데이터 삽입 (class, place 참조)</summary>
-  
-  ``` sql
-INSERT INTO membership_option (class_id, place_id, count, price) VALUES
-(1, 1, 10, 150000),
-(2, 1, 20, 280000),
-(3, 2, 15, 200000);
-```
-</details> 
-
-<details>
-<summary>room_reserve 데이터 삽입 (place_trainer, room 참조)</summary>
-
-  ```sql
-INSERT INTO room_reserve (place_trainer_id, room_id, start_time) VALUES
-(1, 1, '2024-12-06 08:00:00'),
-(2, 2, '2024-12-06 18:00:00'),
-(3, 3, '2024-12-06 11:00:00');
-```
-</details> 
-
-<details>
-<summary>post 데이터 삽입 (place_trainer 참조)</summary>
-
-  ```sql
-INSERT INTO post (place_trainer_id, title, post_contents, post_day) VALUES
-(1, '새로운 요가 프로그램 안내', '12월부터 새로운 요가 프로그램이 시작됩니다!', '2024-11-28 09:00:00'),
-(2, '연말 특별 이벤트', '12월 한달간 특별 할인 이벤트를 진행합니다.', '2024-11-29 10:30:00'),
-(3, '필라테스 입문 가이드', '필라테스 초보자를 위한 안내 글입니다.', '2024-11-30 14:00:00');
-```
-</details> 
-
-<details>
-<summary>membership 데이터 삽입 (membership_option, member 참조)</summary>
-
-  ```sql
-INSERT INTO membership (membership_option_id, member_id, refund_YN, remain_count) VALUES
-(1, 1, 'N', 8),
-(2, 2, 'N', 20),
-(3, 3, 'N', 12);
-```
-</details> 
-
-<details>
-<summary>coment 데이터 삽입 (post, member 참조)</summary>
-
-  ```sql
-INSERT INTO coment (post_id, member_id, comment_contents, comment_day) VALUES
-(1, 1, '요가 프로그램 기대됩니다!', '2024-11-28 10:00:00'),
-(2, 2, '할인 이벤트 감사합니다~', '2024-11-29 11:00:00'),
-(3, 3, '필라테스 처음인데 도움 많이 됐어요', '2024-11-30 15:00:00');
-```
-</details> 
-
-<details>
-<summary>payment 데이터 삽입 (membership 참조)</summary>
-  
-  ```sql
-INSERT INTO payment (membership_id, pay_price, pay_day) VALUES
-(1, 150000, '2024-11-01 14:30:00'),
-(2, 280000, '2024-11-05 16:20:00'),
-(3, 200000, '2024-11-10 11:00:00');
-```
-</details> 
-
-<details>
-<summary>refund 데이터 삽입 (payment 참조)</summary>
-
-  ```sql
-INSERT INTO refund (payment_id, refund_price, refund_day) VALUES
-(1, 50000, '2024-11-15 10:00:00'),
-(2, 100000, '2024-11-20 15:30:00'),
-(3, 80000, '2024-11-25 13:45:00');
-```
-</details> 
-
-<details>
-<summary>admin 데이터 삽입 (외래키 없음)</summary>
-
-  ```sql
+-- 관리자
 INSERT INTO admin (name, email, password, type) VALUES
 ('최관리자', 'admin.choi@gymkkong.com', 'hashed_password_123', 'super_admin'),
 ('김매니저', 'manager.kim@gymkkong.com', 'hashed_password_456', 'admin'),
 ('이스태프', 'staff.lee@gymkkong.com', 'hashed_password_789', 'admin');
 ```
-</details> 
+</details>
+
+<details>
+<summary>시설 및 관계 데이터 (룸/place_trainer)</summary>
+
+```sql
+-- 강습실
+INSERT INTO room (place_id, room_num) VALUES
+(1, 101), (1, 102), (2, 201);
+
+-- 지점-트레이너 관계
+INSERT INTO place_trainer (place_id, trainer_id, status) VALUES
+(1, 1, 'ACTIVE'), (1, 2, 'ACTIVE'), (2, 3, 'ACTIVE');
+```
+</details>
+
+<details>
+<summary>강습 및 예약 데이터</summary>
+
+```sql
+-- 강습
+INSERT INTO class (trainer_id, room_id, class_name, start_time, capacity) VALUES
+(1, 1, '아침 요가 클래스', '2024-12-05 07:00:00', 15),
+(2, 2, '근력 운동 클래스', '2024-12-05 19:00:00', 10),
+(3, 3, '필라테스 클래스', '2024-12-05 10:00:00', 12);
+
+-- 출석
+INSERT INTO attendance (class_id, member_id, status) VALUES
+(1, 1, 'Y'), (1, 2, 'Y'), (2, 3, 'N');
+
+-- 룸 예약
+INSERT INTO room_reserve (place_trainer_id, room_id, start_time) VALUES
+(1, 1, '2024-12-06 08:00:00'),
+(2, 2, '2024-12-06 18:00:00'),
+(3, 3, '2024-12-06 11:00:00');
+```
+</details>
+
+<details>
+<summary>이용권 및 결제 데이터</summary>
+
+```sql
+-- 이용권 옵션
+INSERT INTO membership_option (class_id, place_id, count, price) VALUES
+(1, 1, 10, 150000), (2, 1, 20, 280000), (3, 2, 15, 200000);
+
+-- 이용권 (회원 구매)
+INSERT INTO membership (membership_option_id, member_id, refund_YN, remain_count) VALUES
+(1, 1, 'N', 8), (2, 2, 'N', 20), (3, 3, 'N', 12);
+
+-- 결제
+INSERT INTO payment (membership_id, pay_price, pay_day) VALUES
+(1, 150000, '2024-11-01 14:30:00'),
+(2, 280000, '2024-11-05 16:20:00'),
+(3, 200000, '2024-11-10 11:00:00');
+
+-- 환불
+INSERT INTO refund (payment_id, refund_price, refund_day) VALUES
+(1, 50000, '2024-11-15 10:00:00'),
+(2, 100000, '2024-11-20 15:30:00'),
+(3, 80000, '2024-11-25 13:45:00');
+```
+</details>
+
+<details>
+<summary>커뮤니티 데이터 (게시글/댓글)</summary>
+
+```sql
+-- 게시글
+INSERT INTO post (place_trainer_id, title, contents, post_date) VALUES
+(1, '새로운 요가 프로그램 안내', '12월부터 새로운 요가 프로그램이 시작됩니다!', '2024-11-28 09:00:00'),
+(2, '연말 특별 이벤트', '12월 한달간 특별 할인 이벤트를 진행합니다.', '2024-11-29 10:30:00'),
+(3, '필라테스 입문 가이드', '필라테스 초보자를 위한 안내 글입니다.', '2024-11-30 14:00:00');
+
+-- 댓글 (comment 테이블명 통일)
+INSERT INTO comment (post_id, member_id, contents, comment_date) VALUES
+(1, 1, '요가 프로그램 기대됩니다!', '2024-11-28 10:00:00'),
+(2, 2, '할인 이벤트 감사합니다~', '2024-11-29 11:00:00'),
+(3, 3, '필라테스 처음인데 도움 많이 됐어요', '2024-11-30 15:00:00');
+```
+</details>
 
 ### 테스트 케이스 실행
 <details>
