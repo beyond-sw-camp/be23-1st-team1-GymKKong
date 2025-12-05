@@ -389,17 +389,6 @@ INSERT INTO refund (payment_id, refund_price, refund_day) VALUES
 ```
 </details> 
 
-<details>
-<summary>admin 데이터 삽입 (외래키 없음)/summary>
-
-```sql
-INSERT INTO admin (name, email, password, type) VALUES
-('최관리자', 'admin.choi@gymkkong.com', 'hashed_password_123', 'super_admin'),
-('김매니저', 'manager.kim@gymkkong.com', 'hashed_password_456', 'admin'),
-('이스태프', 'staff.lee@gymkkong.com', 'hashed_password_789', 'admin');
-```
-</details> 
-
 ### 테스트 케이스 실행
 <details>
 <summary>시스템 통합 SQL 스크립트 ([TEST] 테스트쿼리 | [PROC] 프로시저 | [VIEW] 뷰 | [SELECT] 조회쿼리 | [INSERT] 삽입쿼리 )</summary>
