@@ -23,6 +23,7 @@ create table comment
     foreign key (post_id) Reference post(id),
     foreign key (member_id) Reference member (id)
 );
+
 --admin
 create table admin
 (
