@@ -1,3 +1,4 @@
+--커밋 테스트
 --디비 만들기
 create
 databases gymkkong;
