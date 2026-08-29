@@ -5,6 +5,8 @@
 `db/v2/01_schema.sql`로 재설계했습니다. **v1 파일은 지우지 않고 그대로 두었습니다.**
 
 아래는 v1을 실제로 실행/정독하면서 확인한 문제와 v2의 대응입니다.
+완성된 v2 구조는 [erd.md](erd.md), 그 위에 올린 아키텍처는 [architecture.md](architecture.md),
+권한 설계는 [rbac.md](rbac.md)에 있습니다.
 
 ---
 
