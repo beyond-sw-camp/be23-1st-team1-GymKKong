@@ -129,10 +129,34 @@ node tools/build-spec.mjs
 | 파일 | 용도 |
 | --- | --- |
 | `docs/화면정의서.pdf` | 1920×1080 슬라이드 21장 |
-| `docs/spec-slides/S01~S21.png` | Figma·PPT에 그대로 넣을 수 있는 장당 이미지 |
+| `docs/spec-slides/S01~S21.png` | 장당 이미지 |
 | `docs/화면정의서.html` | 브라우저로 바로 보기 (이미지 내장) |
 
 내용을 고치려면 `tools/spec-data.mjs` 를 수정하고 다시 실행하면 됩니다.
+
+### Figma Slides
+
+같은 내용을 Figma Slides로도 만들어 두었습니다. 21장, 4개 섹션(들어가며 / 회원 /
+트레이너·관리자 / 증적·마무리)이며 캡처 44장이 실제 이미지로 들어가 있습니다.
+
+- https://www.figma.com/slides/qieUXv3DkmEcmfcyaAb9B8
+
+편집이 필요하면 Figma에서 바로 고치면 됩니다. 캡처를 갱신할 때는 E2E를 다시 돌린 뒤
+해당 이미지 노드에 새 파일을 올리면 됩니다.
+
+## 6. 증적
+
+E2E 한 번 실행으로 아래가 함께 나옵니다.
+
+| 종류 | 위치 | 수량 |
+| --- | --- | --- |
+| 화면 캡처 | `docs/evidence/*.png` | 46장 |
+| 시나리오 녹화 | `docs/evidence/video/*.webm` · `*.mp4` | 28건 × 2 포맷 |
+| 콘솔 출력 | `docs/evidence/console/*.png` · `*.txt` | 8건 |
+
+녹화 목록은 `docs/evidence/video/INDEX.md` 에 시나리오 이름과 함께 정리됩니다.
+영상 파일은 용량이 커서 저장소에는 넣지 않고 목록만 남깁니다 — 필요하면
+`npx playwright test` 로 다시 만들 수 있습니다.
 
 ## 자주 겪는 문제
 
