@@ -1473,6 +1473,12 @@ ORDER BY 환불횟수 DESC;
 
 - 🔗 [실행 방법](docs/getting-started.md)
 - 🔗 [스키마 v2 — 왜 바꿨는가](docs/schema-v2.md)
+- 🔗 [화면정의서 (PDF)](docs/화면정의서.pdf) · [Figma Slides](https://www.figma.com/slides/qieUXv3DkmEcmfcyaAb9B8)
+
+### 증적
+
+E2E 한 번 실행으로 화면 캡처 46장 · 시나리오 녹화 28건(webm·mp4) ·
+콘솔 출력 8건이 함께 나옵니다. 전부 `docs/evidence/` 아래에 있습니다.
 
 ### 한 줄 요약
 
