@@ -11,6 +11,7 @@ import {
 import { API_BASE_URL } from '../../src/api/client';
 import { useFavorites, useMyPayments } from '../../src/api/hooks';
 import { useConfirm } from '../../src/components/ConfirmProvider';
+import { Icon } from '../../src/components/Icon';
 import { Badge, Button, Card, Divider, InfoRow } from '../../src/components/ui';
 import { useAuth } from '../../src/lib/AuthProvider';
 import { formatDateTime, formatWon } from '../../src/lib/format';
@@ -81,7 +82,7 @@ export default function ProfileScreen() {
                         {p.address}
                       </Text>
                     </View>
-                    <Text style={styles.chevron}>›</Text>
+                    <Icon name="chevron-right" size={18} color={colors.textFaint} />
                   </Pressable>
                 </View>
               ))
@@ -153,7 +154,6 @@ const styles = StyleSheet.create({
   linkRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacing.sm },
   linkTitle: { fontSize: fontSize.md, fontWeight: '600', color: colors.text },
   linkMeta: { fontSize: fontSize.sm, color: colors.textMuted, marginTop: 2 },
-  chevron: { fontSize: fontSize.xl, color: colors.textFaint },
 
   paymentRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacing.sm },
   amount: { fontSize: fontSize.md, fontWeight: '700', color: colors.text },

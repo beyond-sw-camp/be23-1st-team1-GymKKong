@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { errorMessage } from '../../src/api/client';
+import { Logo } from '../../src/components/Logo';
 import { Button, Field } from '../../src/components/ui';
 import { useAuth } from '../../src/lib/AuthProvider';
 import { colors, fontSize, spacing } from '../../src/theme';
@@ -63,8 +64,7 @@ export default function LoginScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.header}>
-            <Text style={styles.logo}>짐꽁</Text>
-            <Text style={styles.tagline}>수업 예약부터 출석까지 한 번에</Text>
+            <Logo size={76} stacked showTagline />
           </View>
 
           <Field
@@ -128,8 +128,6 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   container: { flexGrow: 1, justifyContent: 'center', padding: spacing.xl },
   header: { alignItems: 'center', marginBottom: spacing.xxl },
-  logo: { fontSize: 44, fontWeight: '800', color: colors.primary, letterSpacing: -1 },
-  tagline: { marginTop: spacing.sm, color: colors.textMuted, fontSize: fontSize.md },
   error: {
     color: colors.danger,
     fontSize: fontSize.sm,

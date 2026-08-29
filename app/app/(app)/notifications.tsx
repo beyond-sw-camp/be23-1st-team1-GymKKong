@@ -5,17 +5,19 @@ import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from 'rea
 import { errorMessage } from '../../src/api/client';
 import { useMarkRead, useNotifications } from '../../src/api/hooks';
 import type { AppNotification } from '../../src/api/types';
+import { Icon, type IconName } from '../../src/components/Icon';
 import { EmptyState, ErrorState, Loading } from '../../src/components/ui';
 import { relativeTime } from '../../src/lib/format';
 import { colors, fontSize, radius, shadow, spacing } from '../../src/theme';
 
-const ICONS: Record<string, string> = {
-  RESERVATION: '✅',
-  CLASS_CANCELED: '⚠️',
-  MEMBERSHIP_EXPIRING: '⏳',
-  PAYMENT: '💳',
-  COMMENT: '💬',
-  NOTICE: '📢',
+/** 알림 종류별 아이콘과 색. 종류를 색으로도 구분한다. */
+const ICONS: Record<string, { name: IconName; color: string }> = {
+  RESERVATION: { name: 'check-circle', color: colors.success },
+  CLASS_CANCELED: { name: 'alert-triangle', color: colors.danger },
+  MEMBERSHIP_EXPIRING: { name: 'clock', color: colors.warning },
+  PAYMENT: { name: 'card', color: colors.primary },
+  COMMENT: { name: 'message', color: colors.accent },
+  NOTICE: { name: 'megaphone', color: colors.indigo },
 };
 
 export default function NotificationsScreen() {
@@ -70,7 +72,13 @@ export default function NotificationsScreen() {
             pressed && { opacity: 0.9 },
           ]}
         >
-          <Text style={styles.icon}>{ICONS[item.type] ?? '🔔'}</Text>
+          <View style={styles.iconWrap}>
+            <Icon
+              name={(ICONS[item.type] ?? { name: 'bell' }).name}
+              size={20}
+              color={ICONS[item.type]?.color ?? colors.textMuted}
+            />
+          </View>
           <View style={{ flex: 1 }}>
             <View style={styles.titleRow}>
               <Text style={styles.title} numberOfLines={1}>
@@ -100,7 +108,14 @@ const styles = StyleSheet.create({
     ...shadow.card,
   },
   unread: { backgroundColor: colors.primarySoft },
-  icon: { fontSize: 22 },
+  iconWrap: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   title: { flexShrink: 1, fontSize: fontSize.md, fontWeight: '700', color: colors.text },
   dot: { width: 7, height: 7, borderRadius: 4, backgroundColor: colors.primary },

@@ -13,6 +13,7 @@ import {
 import { errorMessage } from '../../src/api/client';
 import { useAddComment, useComments, usePost } from '../../src/api/hooks';
 import { useConfirm } from '../../src/components/ConfirmProvider';
+import { Icon } from '../../src/components/Icon';
 import { Badge, Button, Card, Divider, ErrorState, Loading } from '../../src/components/ui';
 import { useAuth } from '../../src/lib/AuthProvider';
 import { formatDateTime, relativeTime } from '../../src/lib/format';
@@ -72,7 +73,12 @@ export default function PostDetailScreen() {
         <Card>
           <View style={styles.titleRow}>
             <Badge value={post.postType} />
-            {post.isPinned && <Text style={styles.pin}>📌 고정</Text>}
+            {post.isPinned && (
+            <View style={styles.pinRow}>
+              <Icon name="pin" size={13} filled color={colors.accent} />
+              <Text style={styles.pin}>고정</Text>
+            </View>
+          )}
           </View>
           <Text style={styles.title}>{post.title}</Text>
           <Text style={styles.meta}>
@@ -143,7 +149,8 @@ const styles = StyleSheet.create({
   content: { padding: spacing.lg, paddingBottom: spacing.xxl },
 
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  pin: { fontSize: fontSize.xs, color: colors.textMuted },
+  pinRow: { flexDirection: 'row', alignItems: 'center', gap: 3 },
+  pin: { fontSize: fontSize.xs, color: colors.accent, fontWeight: '600' },
   title: { fontSize: fontSize.xl, fontWeight: '800', color: colors.text, marginTop: spacing.sm },
   meta: { fontSize: fontSize.sm, color: colors.textMuted, marginTop: spacing.xs },
   body: { fontSize: fontSize.md, color: colors.text, lineHeight: 24 },

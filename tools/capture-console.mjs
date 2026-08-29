@@ -45,6 +45,16 @@ function run(cmd, args, opts = {}) {
   }
 }
 
+/** API가 다시 응답할 때까지 기다린다. 재시작 직후 바로 호출하면 503이 난다. */
+function waitForApi(timeoutMs = 90_000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const out = run('docker', ['logs', '--tail', '80', 'gymkkong-api']);
+    if (out.includes('Started GymkkongApiApplication')) return true;
+  }
+  return false;
+}
+
 /** ANSI 이스케이프 제거 + 과도한 공백 정리. */
 function clean(text, maxLines = 60) {
   const stripped = text
@@ -139,14 +149,20 @@ const CAPTURES = [
     note: '로컬에 JDK가 없어 gradle:8.12-jdk21 컨테이너에서 빌드한다.',
     cmd: '$ docker run --rm -v ...:/app gradle:8.12-jdk21 gradle bootJar',
     skipOnQuick: true,
-    get: () =>
-      run('docker', [
+    get: () => {
+      const out = run('docker', [
         'run', '--rm',
         '-v', `${join(ROOT, 'backend')}:/app`,
         '-v', 'gymkkong-gradle-cache:/home/gradle/.gradle',
         '-w', '/app',
         'gradle:8.12-jdk21', 'gradle', 'bootJar', '--console=plain',
-      ]),
+      ]);
+      // 빌드는 실행 중인 API 컨테이너가 마운트한 jar를 덮어쓴다.
+      // 그대로 두면 JVM이 클래스를 못 찾아 NoClassDefFoundError로 죽는다.
+      run('docker', ['restart', 'gymkkong-api']);
+      waitForApi();
+      return out;
+    },
     maxLines: 24,
   },
   {

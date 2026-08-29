@@ -22,6 +22,7 @@ import {
 } from '../../src/api/hooks';
 import type { PostType } from '../../src/api/types';
 import { useConfirm } from '../../src/components/ConfirmProvider';
+import { Icon } from '../../src/components/Icon';
 import { ChoiceGroup, FormSheet } from '../../src/components/FormSheet';
 import { Badge, Button, Card, Divider, ErrorState, Field, InfoRow, Loading } from '../../src/components/ui';
 import { useAuth } from '../../src/lib/AuthProvider';
@@ -111,7 +112,12 @@ export default function PlaceDetailScreen() {
             hitSlop={10}
             accessibilityLabel={place.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
           >
-            <Text style={styles.star}>{place.favorite ? '★' : '☆'}</Text>
+            <Icon
+              name="star"
+              size={26}
+              filled={place.favorite}
+              color={place.favorite ? colors.warning : colors.textFaint}
+            />
           </Pressable>
         </View>
 
@@ -263,7 +269,7 @@ export default function PlaceDetailScreen() {
                 <Pressable onPress={() => router.push(`/post/${p.id}`)} style={styles.rowItem}>
                   <View style={{ flex: 1 }}>
                     <View style={styles.planTitleRow}>
-                      {p.isPinned && <Text style={styles.pin}>📌</Text>}
+                      {p.isPinned && <Icon name="pin" size={14} filled color={colors.accent} />}
                       <Badge value={p.postType} />
                       <Text style={styles.itemTitle} numberOfLines={1}>
                         {p.title}
@@ -273,7 +279,7 @@ export default function PlaceDetailScreen() {
                       {p.authorName} · {relativeTime(p.createdAt)} · 댓글 {p.commentCount}
                     </Text>
                   </View>
-                  <Text style={styles.chevron}>›</Text>
+                  <Icon name="chevron-right" size={18} color={colors.textFaint} />
                 </Pressable>
               </View>
             ))
@@ -375,7 +381,6 @@ const styles = StyleSheet.create({
   headerRow: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },
   name: { fontSize: fontSize.xxl, fontWeight: '800', color: colors.text },
   address: { fontSize: fontSize.sm, color: colors.textMuted, marginTop: spacing.xs },
-  star: { fontSize: 26, color: colors.warning },
   description: { fontSize: fontSize.sm, color: colors.textMuted, marginTop: spacing.md, lineHeight: 20 },
 
   tabs: {
@@ -402,8 +407,6 @@ const styles = StyleSheet.create({
   rowItem: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: spacing.sm },
   itemTitle: { flexShrink: 1, fontSize: fontSize.md, fontWeight: '600', color: colors.text },
   itemMeta: { fontSize: fontSize.sm, color: colors.textMuted, marginTop: 2 },
-  chevron: { fontSize: fontSize.xl, color: colors.textFaint },
-  pin: { fontSize: fontSize.sm },
 
   avatar: {
     width: 40,
