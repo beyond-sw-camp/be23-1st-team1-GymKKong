@@ -24,6 +24,8 @@ interface ButtonProps {
   loading?: boolean;
   small?: boolean;
   style?: ViewStyle;
+  /** 라벨이 상태에 따라 바뀌는 버튼을 테스트에서 안정적으로 집기 위한 식별자. */
+  testID?: string;
 }
 
 export function Button({
@@ -34,6 +36,7 @@ export function Button({
   loading,
   small,
   style,
+  testID,
 }: ButtonProps) {
   const inactive = disabled || loading;
 
@@ -53,6 +56,9 @@ export function Button({
   return (
     <Pressable
       onPress={inactive ? undefined : onPress}
+      // accessibilityState만으로는 웹에서 DOM disabled 속성이 붙지 않아
+      // 키보드 포커스가 그대로 잡힌다. 실제 disabled까지 내려준다.
+      disabled={!!inactive}
       style={({ pressed }) => [
         styles.button,
         small && styles.buttonSmall,
@@ -66,6 +72,7 @@ export function Button({
       ]}
       accessibilityRole="button"
       accessibilityState={{ disabled: !!inactive }}
+      testID={testID}
     >
       {loading ? (
         <ActivityIndicator color={fg[variant]} size="small" />

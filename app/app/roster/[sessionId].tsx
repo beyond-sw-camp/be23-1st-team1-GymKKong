@@ -140,6 +140,7 @@ export default function RosterScreen() {
 
       <View style={styles.footer}>
         <Button
+          testID="save-attendance"
           title={changed.length > 0 ? `${changed.length}명 저장` : '변경 사항 없음'}
           disabled={changed.length === 0}
           loading={check.isPending}
