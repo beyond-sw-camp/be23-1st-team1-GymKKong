@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: gymkkong-api
+
+  datasource:
+    url: ${DB_URL:jdbc:mariadb://localhost:3307/gymkkong_v2?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
+    username: ${DB_USERNAME:gymkkong}
+    password: ${DB_PASSWORD:gymkkong}
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 5000
+
+  jpa:
+    hibernate:
+      # 스키마는 db/v2/01_schema.sql이 소유한다. 애플리케이션은 검증만 한다.
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+        jdbc:
+          time_zone: Asia/Seoul
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never
+    include-stacktrace: never
+
+app:
+  jwt:
+    # 운영에서는 반드시 JWT_SECRET 환경변수로 덮어쓴다. HS256은 32바이트 이상 필요.
+    secret: ${JWT_SECRET:gymkkong-local-dev-secret-key-please-change-me-32bytes+}
+    access-token-minutes: ${JWT_ACCESS_MINUTES:60}
+    refresh-token-days: ${JWT_REFRESH_DAYS:14}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  default-produces-media-type: application/json
+
+logging:
+  level:
+    com.gymkkong.api: DEBUG
+    org.hibernate.SQL: ${SQL_LOG:INFO}
+
+---
+# 로컬 개발용 프로파일. SQL 로그를 켠다.
+spring:
+  config:
+    activate:
+      on-profile: local
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
