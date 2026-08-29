@@ -1469,9 +1469,13 @@ ORDER BY 환불횟수 DESC;
 | `db/v2/` | 스키마 v2 + 시드 데이터 (MariaDB) |
 | `backend/` | Spring Boot 3.4 + JPA + JWT REST API |
 | `app/` | Expo(React Native) 앱 — 회원 / 트레이너 / 관리자 |
-| `docs/` | 실행 방법과 설계 변경 근거 |
+| `docs/` | 아키텍처 · RBAC · ERD · 실행 방법 · 설계 변경 근거 |
+| `tools/` | 증적 캡처 · 화면정의서 생성 · mermaid 검사 |
 
 - 🔗 [실행 방법](docs/getting-started.md)
+- 🔗 [아키텍처 · 시퀀스 플로우](docs/architecture.md)
+- 🔗 [RBAC — 역할 기반 접근 제어](docs/rbac.md)
+- 🔗 [ERD — 스키마 v2](docs/erd.md)
 - 🔗 [스키마 v2 — 왜 바꿨는가](docs/schema-v2.md)
 - 🔗 [화면정의서 (PDF)](docs/화면정의서.pdf) · [Figma Slides](https://www.figma.com/slides/qieUXv3DkmEcmfcyaAb9B8)
 

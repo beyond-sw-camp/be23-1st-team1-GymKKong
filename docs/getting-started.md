@@ -158,6 +158,21 @@ E2E 한 번 실행으로 아래가 함께 나옵니다.
 영상 파일은 용량이 커서 저장소에는 넣지 않고 목록만 남깁니다 — 필요하면
 `npx playwright test` 로 다시 만들 수 있습니다.
 
+## 7. 설계 문서
+
+| 문서 | 내용 |
+| --- | --- |
+| [architecture.md](architecture.md) | 전체 구성, 레이어, 앱 구조, 시퀀스 플로우, 동시성 설계 |
+| [rbac.md](rbac.md) | 역할 정의, 권한 매트릭스, 4단 방어, 우회 시도 차단 |
+| [erd.md](erd.md) | 스키마 v2 ERD, 제약·인덱스, v1 대응표 |
+| [schema-v2.md](schema-v2.md) | v1의 문제와 v2가 그것을 어떻게 고쳤는지 |
+
+다이어그램은 전부 mermaid입니다. 문서를 고친 뒤에는 문법을 확인하세요.
+
+```bash
+node tools/check-mermaid.mjs
+```
+
 ## 자주 겪는 문제
 
 **포트 충돌**
