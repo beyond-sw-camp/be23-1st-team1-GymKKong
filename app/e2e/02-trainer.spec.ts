@@ -75,12 +75,23 @@ test.describe('트레이너', () => {
     await expect(page.getByText(ACCOUNTS.member.name).first()).toBeVisible();
     await evidence(page, 'trainer-roster');
 
+    // 시드의 예약은 "지금보다 뒤인 첫 회차"에 붙는다. 07:00을 지난 시각에 돌리면
+    // 이 회차가 이미 출석 처리된 상태여서 [출석]을 눌러도 변경이 없다.
+    // 어느 쪽이든 변경이 생기도록 한 번 더 분기한다.
+    // 저장 버튼은 변경이 있을 때만 "N명 저장"으로 라벨이 바뀐다.
+    // 라벨로 집으면 변경이 없을 때 영영 기다리게 되므로 testID로 집는다.
+    const save = page.getByTestId('save-attendance');
     await page.getByRole('button', { name: '출석', exact: true }).first().click();
     await page.waitForTimeout(400);
-    await expect(page.getByRole('button', { name: /명 저장/ })).toBeEnabled();
+    if (!/명 저장/.test((await save.textContent()) ?? '')) {
+      await page.getByRole('button', { name: '노쇼', exact: true }).first().click();
+      await page.waitForTimeout(400);
+    }
+    await expect(save).toBeEnabled();
     await evidence(page, 'trainer-roster-marked');
 
-    await page.getByRole('button', { name: /명 저장/ }).click();
+    await expect(save).toHaveText(/명 저장/);
+    await save.click();
     await expect(page.getByTestId('dialog-title')).toHaveText('저장 완료');
     await evidence(page, 'trainer-attendance-saved');
     await pressDialog(page, '확인');

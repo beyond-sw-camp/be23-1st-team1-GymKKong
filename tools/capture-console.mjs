@@ -22,6 +22,7 @@ const { chromium } = require('@playwright/test');
 const OUT = join(ROOT, 'docs', 'evidence', 'console');
 const APP = join(ROOT, 'app');
 const QUICK = process.argv.includes('--quick');
+const API_URL = process.env.API_URL ?? 'http://localhost:8090';
 /** 명령을 다시 돌리지 않고, 지난 실행이 남긴 .txt로 이미지만 다시 그린다. */
 const RENDER_ONLY = process.argv.includes('--render-only');
 
@@ -45,14 +46,30 @@ function run(cmd, args, opts = {}) {
   }
 }
 
-/** API가 다시 응답할 때까지 기다린다. 재시작 직후 바로 호출하면 503이 난다. */
-function waitForApi(timeoutMs = 90_000) {
+/**
+ * API가 다시 응답할 때까지 기다린다. 재시작 직후 바로 호출하면 연결이 거부된다.
+ *
+ * 로그의 "Started GymkkongApiApplication"을 보면 안 된다. `docker restart` 직후에는
+ * 직전 실행이 남긴 그 줄이 tail에 그대로 남아 있어서 아직 부팅 중인데도 통과해버린다.
+ * 실제 요청이 응답하는지를 준비 신호로 삼는다.
+ */
+async function waitForApi(timeoutMs = 180_000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
-    const out = run('docker', ['logs', '--tail', '80', 'gymkkong-api']);
-    if (out.includes('Started GymkkongApiApplication')) return true;
+    try {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // 틀린 비밀번호 — 조회 + BCrypt까지 실제로 태워서 첫 쿼리 컴파일을 미리 끝낸다.
+        body: JSON.stringify({ email: 'kim@example.com', password: 'not-the-password' }),
+      });
+      if (res.status === 401 || res.status === 200) return true;
+    } catch {
+      // 아직 안 떴다
+    }
+    await new Promise((r) => setTimeout(r, 1000));
   }
-  return false;
+  throw new Error(`${API_URL} 가 ${timeoutMs / 1000}초 안에 응답하지 않았습니다.`);
 }
 
 /** ANSI 이스케이프 제거 + 과도한 공백 정리. */
@@ -149,7 +166,7 @@ const CAPTURES = [
     note: '로컬에 JDK가 없어 gradle:8.12-jdk21 컨테이너에서 빌드한다.',
     cmd: '$ docker run --rm -v ...:/app gradle:8.12-jdk21 gradle bootJar',
     skipOnQuick: true,
-    get: () => {
+    get: async () => {
       const out = run('docker', [
         'run', '--rm',
         '-v', `${join(ROOT, 'backend')}:/app`,
@@ -160,7 +177,7 @@ const CAPTURES = [
       // 빌드는 실행 중인 API 컨테이너가 마운트한 jar를 덮어쓴다.
       // 그대로 두면 JVM이 클래스를 못 찾아 NoClassDefFoundError로 죽는다.
       run('docker', ['restart', 'gymkkong-api']);
-      waitForApi();
+      await waitForApi();
       return out;
     },
     maxLines: 24,
@@ -266,7 +283,7 @@ for (const c of CAPTURES) {
   if (RENDER_ONLY && existsSync(txtPath)) {
     raw = readFileSync(txtPath, 'utf8');
   } else {
-    raw = c.get();
+    raw = await c.get();
     writeFileSync(txtPath, raw, 'utf8');
   }
   const body = clean(raw, c.maxLines ?? 40);
