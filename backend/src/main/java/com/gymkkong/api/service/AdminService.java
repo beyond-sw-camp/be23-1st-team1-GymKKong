@@ -8,7 +8,6 @@ import com.gymkkong.api.domain.*;
 import com.gymkkong.api.dto.AuthDtos.UserResponse;
 import com.gymkkong.api.dto.PlaceDtos.*;
 import com.gymkkong.api.repository.*;
-import com.gymkkong.api.repository.Repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

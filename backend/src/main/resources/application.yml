@@ -29,7 +29,8 @@ spring:
       write-dates-as-timestamps: false
 
 server:
-  port: ${SERVER_PORT:8080}
+  # 8080은 다른 로컬 서비스가 흔히 점유하므로 8081을 기본값으로 쓴다.
+  port: ${SERVER_PORT:8081}
   error:
     include-message: never
     include-stacktrace: never
