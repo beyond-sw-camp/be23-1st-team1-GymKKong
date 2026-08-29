@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,6 +76,7 @@ public class MeController {
     }
 
     @Operation(summary = "이용권 구매")
+    @PreAuthorize("hasRole('MEMBER')")
     @PostMapping("/memberships")
     public ResponseEntity<MembershipResponse> purchase(@AuthenticationPrincipal AuthUser user,
                                                        @Valid @RequestBody PurchaseRequest req) {
@@ -82,6 +84,7 @@ public class MeController {
     }
 
     @Operation(summary = "이용권 환불 요청", description = "잔여 횟수 비율로 금액이 계산되며 관리자 승인이 필요하다.")
+    @PreAuthorize("hasRole('MEMBER')")
     @PostMapping("/memberships/{membershipId}/refund")
     public ResponseEntity<RefundResponse> refund(@AuthenticationPrincipal AuthUser user,
                                                  @PathVariable Long membershipId,
