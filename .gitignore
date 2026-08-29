@@ -36,7 +36,6 @@ app/test-results/
 app/playwright-report/
 docs/evidence/_report/
 
-# E2E 녹화본 — 용량이 커서 저장소에는 목록(INDEX.md)만 남긴다
-docs/evidence/video/*.webm
-docs/evidence/video/*.mp4
+# E2E 녹화 원본 작업 폴더. 정리 후 지워지므로 추적하지 않는다.
+# 정리된 녹화본(webm/mp4)은 증적이라 저장소에 포함한다.
 docs/evidence/video/_raw/
