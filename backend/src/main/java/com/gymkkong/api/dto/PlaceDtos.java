@@ -110,6 +110,21 @@ public final class PlaceDtos {
     /** 트레이너가 지점 소속을 신청할 때 사용. */
     public record TrainerJoinRequest(@NotNull Long placeId) {}
 
+    /**
+     * 관리자 승인 대기 목록의 한 줄.
+     * 승인/거절 API는 place_trainer의 PK를 받으므로 userId와 함께 내려준다.
+     */
+    public record PendingTrainer(
+            Long placeTrainerId,
+            Long userId,
+            String name,
+            String email,
+            String phoneNum,
+            String specialty,
+            Integer careerYears,
+            java.time.LocalDateTime requestedAt
+    ) {}
+
     /** 트레이너 화면: 내가 신청/소속된 지점과 승인 상태. */
     public record MyPlaceResponse(
             Long placeId,

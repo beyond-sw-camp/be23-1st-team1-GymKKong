@@ -25,3 +25,8 @@ web-build/
 *.iml
 .DS_Store
 Thumbs.db
+
+# Expo
+app/.expo/
+app/dist/
+app/web-build/

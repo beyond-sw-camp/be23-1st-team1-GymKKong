@@ -84,7 +84,7 @@ public class AdminController {
 
     @Operation(summary = "트레이너 소속 승인 대기 목록")
     @GetMapping("/places/{placeId}/trainers/pending")
-    public ResponseEntity<List<TrainerSummary>> pendingTrainers(@AuthenticationPrincipal AuthUser admin,
+    public ResponseEntity<List<PendingTrainer>> pendingTrainers(@AuthenticationPrincipal AuthUser admin,
                                                                 @PathVariable Long placeId) {
         return ResponseEntity.ok(adminService.pendingTrainers(admin, placeId));
     }
