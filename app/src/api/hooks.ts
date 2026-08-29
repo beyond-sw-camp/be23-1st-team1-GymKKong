@@ -16,6 +16,7 @@ import type {
   PlaceDetail,
   PlaceSummary,
   Plan,
+  PlanScope,
   PostDetail,
   PostSummary,
   Program,
@@ -383,6 +384,50 @@ export const useAdminRefunds = () =>
     queryKey: qk.adminRefunds(),
     queryFn: () => get<PageResponse<Refund>>('/api/admin/refunds', { size: 50 }),
   });
+
+export function useCreatePlace() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      name: string;
+      address: string;
+      phoneNum?: string;
+      description?: string;
+      latitude?: number;
+      longitude?: number;
+    }) => api.post<PlaceDetail>('/api/admin/places', body).then((r) => r.data),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['places'] });
+    },
+  });
+}
+
+export function useCreateRoom(placeId: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { roomNum: string; name?: string; capacity: number }) =>
+      api.post<RoomResponse>(`/api/admin/places/${placeId}/rooms`, body).then((r) => r.data),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: qk.placeRooms(placeId) });
+    },
+  });
+}
+
+export function useCreatePlan(placeId: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      name: string;
+      totalCount: number;
+      price: number;
+      validDays: number;
+      classType: PlanScope;
+    }) => api.post<Plan>(`/api/admin/places/${placeId}/plans`, body).then((r) => r.data),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: qk.placePlans(placeId) });
+    },
+  });
+}
 
 export function useDecideRefund() {
   const qc = useQueryClient();

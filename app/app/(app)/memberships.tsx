@@ -1,9 +1,16 @@
 import React from 'react';
-import { Alert, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import {
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import { errorMessage } from '../../src/api/client';
 import { useMyMemberships, useRequestRefund } from '../../src/api/hooks';
 import type { Membership } from '../../src/api/types';
+import { useConfirm } from '../../src/components/ConfirmProvider';
 import { Badge, Button, EmptyState, ErrorState, Loading } from '../../src/components/ui';
 import { daysUntil, formatWon } from '../../src/lib/format';
 import { colors, fontSize, radius, shadow, spacing, statusLabel } from '../../src/theme';
@@ -11,27 +18,23 @@ import { colors, fontSize, radius, shadow, spacing, statusLabel } from '../../sr
 export default function MembershipsScreen() {
   const query = useMyMemberships();
   const refund = useRequestRefund();
+  const { confirm, notice } = useConfirm();
 
-  const confirmRefund = (m: Membership) => {
+  const confirmRefund = async (m: Membership) => {
     const amount = m.expectedRefundAmount != null ? formatWon(m.expectedRefundAmount) : '금액 계산 중';
-    Alert.alert(
-      '환불을 요청할까요?',
-      `${m.planName}\n잔여 ${m.remainCount}/${m.totalCount}회\n예상 환불액: ${amount}\n\n관리자 승인 후 처리됩니다.`,
-      [
-        { text: '닫기', style: 'cancel' },
-        {
-          text: '환불 요청',
-          style: 'destructive',
-          onPress: () =>
-            refund.mutate(
-              { membershipId: m.id },
-              {
-                onSuccess: () => Alert.alert('접수 완료', '환불 요청이 접수되었습니다.'),
-                onError: (e) => Alert.alert('요청 실패', errorMessage(e)),
-              },
-            ),
-        },
-      ],
+    const ok = await confirm({
+      title: '환불을 요청할까요?',
+      message: `${m.planName}\n잔여 ${m.remainCount}/${m.totalCount}회\n예상 환불액: ${amount}\n\n관리자 승인 후 처리됩니다.`,
+      confirmText: '환불 요청',
+      destructive: true,
+    });
+    if (!ok) return;
+    refund.mutate(
+      { membershipId: m.id },
+      {
+        onSuccess: () => void notice({ title: '접수 완료', message: '환불 요청이 접수되었습니다.' }),
+        onError: (e) => void notice({ title: '요청 실패', message: errorMessage(e) }),
+      },
     );
   };
 

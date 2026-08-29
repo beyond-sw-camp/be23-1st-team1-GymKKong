@@ -1,0 +1,2 @@
+$ npx tsc --noEmit
+(오류 없음)

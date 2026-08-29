@@ -1,0 +1,5 @@
+[1/2] 데이터 초기화 (00_reset.sql)
+[2/2] 시드 적재 (02_seed.sql)
+users	places	sessions	reservations
+12	3	15	5
+완료.

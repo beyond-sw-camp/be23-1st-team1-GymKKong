@@ -1,7 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -13,6 +12,7 @@ import {
 
 import { errorMessage } from '../../src/api/client';
 import { useAddComment, useComments, usePost } from '../../src/api/hooks';
+import { useConfirm } from '../../src/components/ConfirmProvider';
 import { Badge, Button, Card, Divider, ErrorState, Loading } from '../../src/components/ui';
 import { useAuth } from '../../src/lib/AuthProvider';
 import { formatDateTime, relativeTime } from '../../src/lib/format';
@@ -33,6 +33,7 @@ export default function PostDetailScreen() {
   const postQuery = usePost(postId);
   const commentsQuery = useComments(postId);
   const addComment = useAddComment(postId);
+  const { notice } = useConfirm();
 
   const [draft, setDraft] = useState('');
 
@@ -43,7 +44,7 @@ export default function PostDetailScreen() {
       { content },
       {
         onSuccess: () => setDraft(''),
-        onError: (e) => Alert.alert('댓글 등록 실패', errorMessage(e)),
+        onError: (e) => void notice({ title: '댓글 등록 실패', message: errorMessage(e) }),
       },
     );
   };

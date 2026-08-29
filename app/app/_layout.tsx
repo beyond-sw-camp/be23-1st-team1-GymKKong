@@ -6,6 +6,7 @@ import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { ConfirmProvider } from '../src/components/ConfirmProvider';
 import { Loading } from '../src/components/ui';
 import { AuthProvider, useAuth } from '../src/lib/AuthProvider';
 import { colors } from '../src/theme';
@@ -62,7 +63,8 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <StatusBar style="dark" />
+            <ConfirmProvider>
+              <StatusBar style="dark" />
             <AuthGate>
               <Stack
                 screenOptions={{
@@ -80,6 +82,7 @@ export default function RootLayout() {
                 <Stack.Screen name="roster/[sessionId]" options={{ title: '출석 관리' }} />
               </Stack>
             </AuthGate>
+            </ConfirmProvider>
           </AuthProvider>
         </QueryClientProvider>
       </SafeAreaProvider>

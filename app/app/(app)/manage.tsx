@@ -1,18 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import { api, errorMessage } from '../../src/api/client';
 import {
   useAdminPendingTrainers,
   useAdminRefunds,
   useDecideRefund,
+  usePlacePlans,
+  usePlaceRooms,
   usePlaces,
 } from '../../src/api/hooks';
+import { PlaceFormSheet, PlanFormSheet, RoomFormSheet } from '../../src/components/AdminForms';
+import { useConfirm } from '../../src/components/ConfirmProvider';
 import { Badge, Button, EmptyState, ErrorState, Loading } from '../../src/components/ui';
 import { formatDateTime, formatWon } from '../../src/lib/format';
 import { colors, fontSize, radius, shadow, spacing } from '../../src/theme';
 
-type Tab = 'REFUNDS' | 'TRAINERS';
+type Tab = 'REFUNDS' | 'TRAINERS' | 'FACILITY';
 
 /** 관리자 운영 화면. 환불 승인과 트레이너 소속 승인. */
 export default function ManageScreen() {
@@ -29,34 +41,46 @@ export default function ManageScreen() {
   const refunds = useAdminRefunds();
   const decide = useDecideRefund();
   const pending = useAdminPendingTrainers(placeId ?? 0);
+  const { confirm, notice } = useConfirm();
 
-  const confirmDecision = (refundId: number, approve: boolean, label: string) => {
-    Alert.alert(
-      approve ? '환불을 승인할까요?' : '환불을 거절할까요?',
-      approve
+  // 시설·상품 탭
+  const rooms = usePlaceRooms(placeId ?? 0, tab === 'FACILITY' && placeId != null);
+  const plans = usePlacePlans(placeId ?? 0);
+  const [placeForm, setPlaceForm] = useState(false);
+  const [roomForm, setRoomForm] = useState(false);
+  const [planForm, setPlanForm] = useState(false);
+
+  const confirmDecision = async (refundId: number, approve: boolean, label: string) => {
+    const ok = await confirm({
+      title: approve ? '환불을 승인할까요?' : '환불을 거절할까요?',
+      message: approve
         ? `${label}\n\n승인하면 이용권이 즉시 소멸하고 결제가 취소 처리됩니다.`
         : `${label}\n\n거절하면 이용권은 그대로 유지됩니다.`,
-      [
-        { text: '닫기', style: 'cancel' },
-        {
-          text: approve ? '승인' : '거절',
-          style: approve ? 'default' : 'destructive',
-          onPress: () =>
-            decide.mutate(
-              { refundId, approve },
-              { onError: (e) => Alert.alert('처리 실패', errorMessage(e)) },
-            ),
-        },
-      ],
+      confirmText: approve ? '승인' : '거절',
+      destructive: !approve,
+    });
+    if (!ok) return;
+    decide.mutate(
+      { refundId, approve },
+      { onError: (e) => void notice({ title: '처리 실패', message: errorMessage(e) }) },
     );
   };
 
-  const decideTrainer = async (placeTrainerId: number, approve: boolean) => {
+  const decideTrainer = async (placeTrainerId: number, approve: boolean, name: string) => {
+    const ok = await confirm({
+      title: approve ? '소속을 승인할까요?' : '소속을 거절할까요?',
+      message: approve
+        ? `${name}\n\n승인하면 이 지점에서 강습을 개설할 수 있습니다.`
+        : `${name}\n\n거절하면 다시 신청해야 합니다.`,
+      confirmText: approve ? '승인' : '거절',
+      destructive: !approve,
+    });
+    if (!ok) return;
     try {
       await api.post(`/api/admin/place-trainers/${placeTrainerId}/decision?approve=${approve}`);
       await pending.refetch();
     } catch (e) {
-      Alert.alert('처리 실패', errorMessage(e));
+      await notice({ title: '처리 실패', message: errorMessage(e) });
     }
   };
 
@@ -67,12 +91,15 @@ export default function ManageScreen() {
           [
             ['REFUNDS', '환불 요청'],
             ['TRAINERS', '트레이너 승인'],
+            ['FACILITY', '시설 · 상품'],
           ] as [Tab, string][]
         ).map(([key, label]) => (
           <Pressable
             key={key}
+            accessibilityRole="button"
             onPress={() => setTab(key)}
             style={[styles.tab, tab === key && styles.tabActive]}
+            testID={`tab-${key}`}
           >
             <Text style={[styles.tabText, tab === key && styles.tabTextActive]}>{label}</Text>
           </Pressable>
@@ -190,14 +217,14 @@ export default function ManageScreen() {
                     title="승인"
                     small
                     style={{ flex: 1 }}
-                    onPress={() => decideTrainer(item.placeTrainerId, true)}
+                    onPress={() => decideTrainer(item.placeTrainerId, true, item.name)}
                   />
                   <Button
                     title="거절"
                     variant="secondary"
                     small
                     style={{ flex: 1 }}
-                    onPress={() => decideTrainer(item.placeTrainerId, false)}
+                    onPress={() => decideTrainer(item.placeTrainerId, false, item.name)}
                   />
                 </View>
               </View>
@@ -205,6 +232,97 @@ export default function ManageScreen() {
           />
         </View>
       )}
+
+      {tab === 'FACILITY' && placeId != null && (
+        <ScrollView contentContainerStyle={styles.list}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={[styles.chipStrip, { paddingHorizontal: 0, paddingTop: 0 }]}
+          >
+            {places.map((p) => (
+              <Pressable
+                key={p.id}
+                onPress={() => setPlaceId(p.id)}
+                style={[styles.chip, placeId === p.id && styles.chipActive]}
+              >
+                <Text style={[styles.chipText, placeId === p.id && styles.chipTextActive]}>
+                  {p.name}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+
+          <View style={[styles.card, { marginTop: spacing.lg }]}>
+            <Text style={styles.cardTitle}>강습실</Text>
+            {(rooms.data ?? []).length === 0 ? (
+              <Text style={styles.meta}>등록된 강습실이 없습니다.</Text>
+            ) : (
+              (rooms.data ?? []).map((r) => (
+                <Text key={r.id} style={styles.meta}>
+                  {r.roomNum} {r.name ?? ''} · 수용 {r.capacity}명
+                </Text>
+              ))
+            )}
+            <View style={styles.rowActions}>
+              <Button title="강습실 등록" small onPress={() => setRoomForm(true)} />
+            </View>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>이용권 상품</Text>
+            {(plans.data ?? []).length === 0 ? (
+              <Text style={styles.meta}>등록된 상품이 없습니다.</Text>
+            ) : (
+              (plans.data ?? []).map((p) => (
+                <Text key={p.id} style={styles.meta}>
+                  {p.name} · {p.totalCount}회 · {formatWon(p.price)} · {p.validDays}일
+                </Text>
+              ))
+            )}
+            <View style={styles.rowActions}>
+              <Button title="상품 등록" small onPress={() => setPlanForm(true)} />
+            </View>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>지점</Text>
+            <Text style={styles.meta}>
+              신규 지점 등록은 최고 관리자만 가능합니다. 등록 즉시 앱 홈에 노출됩니다.
+            </Text>
+            <View style={styles.rowActions}>
+              <Button title="지점 등록" small onPress={() => setPlaceForm(true)} />
+            </View>
+          </View>
+        </ScrollView>
+      )}
+
+      <PlaceFormSheet
+        visible={placeForm}
+        onClose={() => setPlaceForm(false)}
+        onCreated={() => {
+          setPlaceForm(false);
+          void placesQuery.refetch();
+        }}
+      />
+      <RoomFormSheet
+        placeId={placeId ?? 0}
+        visible={roomForm}
+        onClose={() => setRoomForm(false)}
+        onCreated={() => {
+          setRoomForm(false);
+          void rooms.refetch();
+        }}
+      />
+      <PlanFormSheet
+        placeId={placeId ?? 0}
+        visible={planForm}
+        onClose={() => setPlanForm(false)}
+        onCreated={() => {
+          setPlanForm(false);
+          void plans.refetch();
+        }}
+      />
     </View>
   );
 }

@@ -1,10 +1,18 @@
 import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
-import { Alert, FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import { errorMessage } from '../../src/api/client';
 import { useCancelReservation, useMyReservations } from '../../src/api/hooks';
 import type { Reservation, ReservationStatus } from '../../src/api/types';
+import { useConfirm } from '../../src/components/ConfirmProvider';
 import { Badge, Button, EmptyState, ErrorState, Loading } from '../../src/components/ui';
 import { formatDate, formatTimeRange } from '../../src/lib/format';
 import { colors, fontSize, radius, shadow, spacing } from '../../src/theme';
@@ -26,23 +34,19 @@ export default function ReservationsScreen() {
 
   const query = useMyReservations(statuses);
   const cancel = useCancelReservation();
+  const { confirm, notice } = useConfirm();
 
-  const confirmCancel = (r: Reservation) => {
-    Alert.alert(
-      '예약을 취소할까요?',
-      `${formatDate(r.startAt)} ${formatTimeRange(r.startAt, r.endAt)}\n${r.programName}\n\n취소하면 이용권 1회가 복원됩니다.`,
-      [
-        { text: '닫기', style: 'cancel' },
-        {
-          text: '예약 취소',
-          style: 'destructive',
-          onPress: () =>
-            cancel.mutate(r.id, {
-              onError: (e) => Alert.alert('취소 실패', errorMessage(e)),
-            }),
-        },
-      ],
-    );
+  const confirmCancel = async (r: Reservation) => {
+    const ok = await confirm({
+      title: '예약을 취소할까요?',
+      message: `${formatDate(r.startAt)} ${formatTimeRange(r.startAt, r.endAt)}\n${r.programName}\n\n취소하면 이용권 1회가 복원됩니다.`,
+      confirmText: '예약 취소',
+      destructive: true,
+    });
+    if (!ok) return;
+    cancel.mutate(r.id, {
+      onError: (e) => void notice({ title: '취소 실패', message: errorMessage(e) }),
+    });
   };
 
   const items = query.data?.content ?? [];
@@ -53,6 +57,7 @@ export default function ReservationsScreen() {
         {FILTERS.map((f) => (
           <Pressable
             key={f.key}
+            accessibilityRole="button"
             onPress={() => setFilter(f.key)}
             style={[styles.tab, filter === f.key && styles.tabActive]}
           >
