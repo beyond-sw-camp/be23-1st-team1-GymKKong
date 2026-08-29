@@ -5,7 +5,6 @@ import com.gymkkong.api.common.ErrorCode;
 import com.gymkkong.api.domain.*;
 import com.gymkkong.api.dto.ClassDtos.*;
 import com.gymkkong.api.repository.*;
-import com.gymkkong.api.repository.Repositories.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

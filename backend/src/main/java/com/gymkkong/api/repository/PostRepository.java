@@ -1,6 +1,5 @@
 package com.gymkkong.api.repository;
 
-import com.gymkkong.api.domain.Comment;
 import com.gymkkong.api.domain.Enums;
 import com.gymkkong.api.domain.Post;
 import org.springframework.data.domain.Page;
@@ -9,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -34,15 +32,4 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             """)
     Optional<Post> findDetailById(@Param("id") Long id);
 
-    interface CommentRepository extends JpaRepository<Comment, Long> {
-
-        @Query("""
-                SELECT c FROM Comment c
-                JOIN FETCH c.author
-                WHERE c.post.id = :postId
-                  AND c.deletedAt IS NULL
-                ORDER BY COALESCE(c.parent.id, c.id) ASC, c.id ASC
-                """)
-        List<Comment> findByPost(@Param("postId") Long postId);
-    }
 }

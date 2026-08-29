@@ -5,7 +5,7 @@ import com.gymkkong.api.common.ErrorCode;
 import com.gymkkong.api.common.PageResponse;
 import com.gymkkong.api.domain.*;
 import com.gymkkong.api.dto.CommunityDtos.*;
-import com.gymkkong.api.repository.Repositories.*;
+import com.gymkkong.api.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
