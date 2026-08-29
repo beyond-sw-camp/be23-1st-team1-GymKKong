@@ -1,0 +1,27 @@
+services:
+  mariadb:
+    image: mariadb:11.4
+    container_name: gymkkong-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: gymkkong
+      MARIADB_DATABASE: gymkkong_v2
+      MARIADB_USER: gymkkong
+      MARIADB_PASSWORD: gymkkong
+      TZ: Asia/Seoul
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3307:3306"
+    volumes:
+      - gymkkong-db:/var/lib/mysql
+      - ./db/v2:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  gymkkong-db:
