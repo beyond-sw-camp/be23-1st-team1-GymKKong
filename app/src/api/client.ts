@@ -13,10 +13,12 @@ import type { ApiErrorBody, TokenResponse } from './types';
  * 호스트를 뽑아 쓴다. 필요하면 app.json의 extra.apiBaseUrl로 직접 지정할 수 있다.
  */
 function resolveBaseUrl(): string {
-  const configured = Constants.expoConfig?.extra?.apiBaseUrl as string | undefined;
-  if (configured) return configured;
+  // Expo는 app.json의 null을 {}로 직렬화한다. 빈 객체를 그대로 쓰면
+  // axios가 "baseURL.slice is not a function"으로 터지므로 문자열인지 확인한다.
+  const configured = Constants.expoConfig?.extra?.apiBaseUrl;
+  if (typeof configured === 'string' && configured.trim()) return configured.trim();
 
-  const port = 8081;
+  const port = 8090;
 
   // Expo 개발 서버 호스트에서 PC의 IP를 추출한다.
   const hostUri =
@@ -35,6 +37,11 @@ function resolveBaseUrl(): string {
 }
 
 export const API_BASE_URL = resolveBaseUrl();
+
+// 실기기에서 "서버에 연결할 수 없습니다"가 뜰 때 가장 먼저 확인해야 할 값이다.
+if (__DEV__) {
+  console.log('[api] baseURL =', API_BASE_URL);
+}
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -118,6 +125,8 @@ export function errorMessage(error: unknown, fallback = '요청을 처리하지 
     if (body?.message) return body.message;
     if (!error.response) return '서버에 연결할 수 없습니다. 네트워크를 확인해주세요.';
   }
+  // 인터셉터나 저장소에서 난 예외까지 fallback으로 뭉개면 원인을 알 수 없다.
+  if (error instanceof Error && error.message) return error.message;
   return fallback;
 }
 

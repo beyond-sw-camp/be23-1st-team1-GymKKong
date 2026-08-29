@@ -224,7 +224,12 @@ const styles = StyleSheet.create({
   tabText: { fontSize: fontSize.sm, color: colors.textMuted, fontWeight: '600' },
   tabTextActive: { color: colors.primary },
 
-  chipStrip: { paddingHorizontal: spacing.lg, paddingTop: spacing.lg, gap: spacing.sm },
+  chipStrip: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+    gap: spacing.sm,
+    alignItems: 'center',
+  },
   chip: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
