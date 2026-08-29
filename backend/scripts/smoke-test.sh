@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
-# GymKKong API 스모크 테스트 — 예약 핵심 플로우 검증
+# GymKKong API 스모크 테스트 — 예약 핵심 플로우와 권한 검증
+#
+# 시나리오가 서로 이어지므로(예약 -> 차감 -> 취소 -> 복원) 매번 같은 상태에서 시작해야 한다.
+# 기본으로 DB를 시드로 되돌린다. 되돌리지 않으려면 SKIP_RESET=1 로 실행한다.
 set -u
-API=http://localhost:8090
+API=${API:-http://localhost:8090}
 PASS=0; FAIL=0
+
+if [ "${SKIP_RESET:-0}" != "1" ]; then
+  echo "== 0. 데이터 초기화 =="
+  bash "$(dirname "${BASH_SOURCE[0]}")/../../db/reset-seed.sh" >/dev/null 2>&1     && echo "  시드 상태로 되돌림"     || echo "  건너뜀 (DB 컨테이너 없음 — 결과가 어긋날 수 있음)"
+  echo
+fi
 
 ok()   { echo "  PASS  $1"; PASS=$((PASS+1)); }
 bad()  { echo "  FAIL  $1"; echo "        got: $2"; FAIL=$((FAIL+1)); }
@@ -109,6 +118,24 @@ RF=$(curl -s -X POST $API/api/me/memberships/$YMID/refund -H "Authorization: Bea
   -H 'Content-Type: application/json' --data-binary @body_refund.json)
 RFMSG=$(echo "$RF" | jqv message)
 [ "$(echo "$RF" | jqv code)" = "MEMBERSHIP_NOT_REFUNDABLE" ] && ok "거부: $RFMSG" || bad "재환불 차단" "$RF"
+
+echo "== 17. 역할 분리: 트레이너·관리자는 회원 도메인 동작 불가 =="
+ATOK=$(curl -s -X POST $API/api/auth/login -H 'Content-Type: application/json'   -d '{"email":"admin.gangnam@gymkkong.com","password":"gymkkong1234"}' | jqv accessToken)
+TBUY=$(curl -s -o /dev/null -w '%{http_code}' -X POST $API/api/me/memberships   -H "Authorization: Bearer $TTOK" -H 'Content-Type: application/json' -d '{"planId":1}')
+ABUY=$(curl -s -o /dev/null -w '%{http_code}' -X POST $API/api/me/memberships   -H "Authorization: Bearer $ATOK" -H 'Content-Type: application/json' -d '{"planId":1}')
+TRES=$(curl -s -o /dev/null -w '%{http_code}' -X POST $API/api/reservations   -H "Authorization: Bearer $TTOK" -H 'Content-Type: application/json' -d "{\"sessionId\":$SID}")
+[ "$TBUY" = "403" ] && ok "트레이너 이용권 구매 403" || bad "트레이너 구매 차단" "HTTP $TBUY"
+[ "$ABUY" = "403" ] && ok "관리자 이용권 구매 403" || bad "관리자 구매 차단" "HTTP $ABUY"
+[ "$TRES" = "403" ] && ok "트레이너 예약 생성 403" || bad "트레이너 예약 차단" "HTTP $TRES"
+
+echo "== 18. 관리자 담당 지점 범위 (SUPER는 전 지점) =="
+STOK=$(curl -s -X POST $API/api/auth/login -H 'Content-Type: application/json'   -d '{"email":"super@gymkkong.com","password":"gymkkong1234"}' | jqv accessToken)
+OWN=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $ATOK" $API/api/admin/places/1/trainers/pending)
+OTHER=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $ATOK" $API/api/admin/places/3/trainers/pending)
+SUPER=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $STOK" $API/api/admin/places/3/trainers/pending)
+[ "$OWN" = "200" ] && ok "담당 지점(강남) 200" || bad "담당 지점" "HTTP $OWN"
+[ "$OTHER" = "403" ] && ok "담당 아닌 지점(잠실) 403" || bad "지점 범위 차단" "HTTP $OTHER"
+[ "$SUPER" = "200" ] && ok "SUPER_ADMIN 전 지점 200" || bad "SUPER 범위" "HTTP $SUPER"
 
 echo
 echo "=============================="
