@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "짐꽁",
+    "slug": "gymkkong",
+    "scheme": "gymkkong",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#2F6BFF",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gymkkong.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "가까운 지점을 찾기 위해 위치 정보를 사용합니다.",
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        }
+      }
+    },
+    "android": {
+      "package": "com.gymkkong.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": ["expo-router", "expo-secure-store"],
+    "extra": {
+      "_comment": "apiBaseUrl을 비워두면 Expo 개발 호스트에서 PC의 IP를 추론한다. 배포 시 실제 주소를 넣는다.",
+      "apiBaseUrl": null
+    }
+  }
+}

@@ -28,6 +28,7 @@ public class AdminService {
     private final PlaceTrainerRepository placeTrainerRepository;
     private final RoomRepository roomRepository;
     private final MembershipPlanRepository planRepository;
+    private final TrainerProfileRepository trainerProfileRepository;
     private final AppUserRepository userRepository;
 
     // ------------------------------------------------------------ 권한
@@ -127,13 +128,21 @@ public class AdminService {
     // ------------------------------------------------------------ 트레이너 승인
 
     @Transactional(readOnly = true)
-    public List<TrainerSummary> pendingTrainers(AuthUser admin, Long placeId) {
+    public List<PendingTrainer> pendingTrainers(AuthUser admin, Long placeId) {
         assertManages(admin, placeId);
         return placeTrainerRepository
                 .findByPlaceAndStatus(placeId, Enums.PlaceTrainerStatus.PENDING)
                 .stream()
-                .map(pt -> new TrainerSummary(pt.getTrainer().getId(), pt.getTrainer().getName(),
-                        null, null, null, pt.getStatus()))
+                .map(pt -> {
+                    AppUser t = pt.getTrainer();
+                    var profile = trainerProfileRepository.findById(t.getId()).orElse(null);
+                    return new PendingTrainer(
+                            // 승인/거절 API가 받는 값은 place_trainer의 PK다.
+                            pt.getId(), t.getId(), t.getName(), t.getEmail(), t.getPhoneNum(),
+                            profile != null ? profile.getSpecialty() : null,
+                            profile != null ? profile.getCareerYears() : null,
+                            pt.getRequestedAt());
+                })
                 .toList();
     }
 
