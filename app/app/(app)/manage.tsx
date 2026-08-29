@@ -164,6 +164,7 @@ export default function ManageScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
+            style={styles.stripBox}
             contentContainerStyle={styles.chipStrip}
           >
             {places.map((p) => (
@@ -329,6 +330,7 @@ export default function ManageScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
+  stripBox: { flexGrow: 0, flexShrink: 0 },
   tabs: {
     flexDirection: 'row',
     backgroundColor: colors.surfaceAlt,

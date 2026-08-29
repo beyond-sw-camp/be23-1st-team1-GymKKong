@@ -20,6 +20,7 @@ export function DateStrip({ selected, onSelect, days = 14 }: Props) {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      style={styles.box}
       contentContainerStyle={styles.container}
     >
       {dates.map((date) => {
@@ -52,6 +53,8 @@ export function DateStrip({ selected, onSelect, days = 14 }: Props) {
 }
 
 const styles = StyleSheet.create({
+  // 가로 ScrollView는 세로 flex 안에서 남은 공간을 다 차지한다. 내용 높이에 묶는다.
+  box: { flexGrow: 0, flexShrink: 0 },
   // 가로 ScrollView의 기본 정렬은 stretch라서, 지정하지 않으면 날짜 칸이 세로로 늘어난다.
   container: {
     paddingHorizontal: spacing.lg,

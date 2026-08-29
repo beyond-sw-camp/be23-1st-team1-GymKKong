@@ -5,6 +5,7 @@ import { FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View
 import { errorMessage } from '../../src/api/client';
 import { useFavorites, usePlaces, useTimetable } from '../../src/api/hooks';
 import { DateStrip } from '../../src/components/DateStrip';
+import { Icon } from '../../src/components/Icon';
 import { SessionCard } from '../../src/components/SessionCard';
 import { EmptyState, ErrorState, Loading } from '../../src/components/ui';
 import { useAuth } from '../../src/lib/AuthProvider';
@@ -58,6 +59,7 @@ export default function HomeScreen() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={styles.stripBox}
         contentContainerStyle={styles.placeStrip}
       >
         {places.map((p) => {
@@ -69,10 +71,15 @@ export default function HomeScreen() {
               onLongPress={() => router.push(`/place/${p.id}`)}
               style={[styles.chip, active && styles.chipActive]}
             >
-              <Text style={[styles.chipText, active && styles.chipTextActive]}>
-                {favoriteIds.has(p.id) ? '★ ' : ''}
-                {p.name}
-              </Text>
+              {favoriteIds.has(p.id) && (
+                <Icon
+                  name="star"
+                  size={13}
+                  filled
+                  color={active ? colors.textInverse : colors.warning}
+                />
+              )}
+              <Text style={[styles.chipText, active && styles.chipTextActive]}>{p.name}</Text>
             </Pressable>
           );
         })}
@@ -97,7 +104,10 @@ export default function HomeScreen() {
                     {selectedPlace.address}
                   </Text>
                 </View>
-                <Text style={styles.placeLink}>상세 ›</Text>
+                <View style={styles.placeLinkRow}>
+                  <Text style={styles.placeLink}>상세</Text>
+                  <Icon name="chevron-right" size={15} color={colors.primary} />
+                </View>
               </View>
             </Pressable>
           ) : null
@@ -128,6 +138,8 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
+  // 가로 ScrollView는 세로 flex 안에서 남은 공간을 다 차지한다. 내용 높이에 묶는다.
+  stripBox: { flexGrow: 0, flexShrink: 0 },
   // 가로 ScrollView의 기본 정렬은 stretch라서, 지정하지 않으면 칩이 세로로 늘어난다.
   placeStrip: {
     paddingHorizontal: spacing.lg,
@@ -136,6 +148,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
     borderRadius: radius.pill,
@@ -157,6 +172,7 @@ const styles = StyleSheet.create({
   },
   placeName: { fontSize: fontSize.md, fontWeight: '700', color: colors.primaryDark },
   placeAddress: { fontSize: fontSize.sm, color: colors.textMuted, marginTop: 2 },
+  placeLinkRow: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   placeLink: { fontSize: fontSize.sm, color: colors.primary, fontWeight: '600' },
 
   list: { padding: spacing.lg, paddingTop: 0, flexGrow: 1 },

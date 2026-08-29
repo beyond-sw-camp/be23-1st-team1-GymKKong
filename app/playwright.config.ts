@@ -11,6 +11,10 @@ export default defineConfig({
   testDir: './e2e',
   // 매 실행 전에 DB를 시드 상태로 되돌린다. 없으면 두 번째 실행부터 어긋난다.
   globalSetup: './e2e/global-setup.ts',
+  // 녹화본을 시나리오별 파일로 정리하고 mp4로도 남긴다.
+  globalTeardown: './e2e/global-teardown.ts',
+  // 원본 녹화(webm)가 쌓이는 곳. 정리 후 지워진다.
+  outputDir: '../docs/evidence/video/_raw',
   fullyParallel: false,
   workers: 1,
   retries: 0,
@@ -28,6 +32,8 @@ export default defineConfig({
     locale: 'ko-KR',
     timezoneId: 'Asia/Seoul',
     trace: 'retain-on-failure',
+    // 전 시나리오를 녹화한다. 캡처(이미지)와 함께 증적으로 남긴다.
+    video: { mode: 'on', size: { width: 390, height: 844 } },
   },
   projects: [{ name: 'chromium', use: { browserName: 'chromium' } }],
 });

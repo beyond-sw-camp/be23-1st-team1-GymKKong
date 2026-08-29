@@ -224,10 +224,13 @@ const html = `<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
+  /* 브랜드 팔레트 — 앱 로고(폴더+덤벨)에서 뽑은 인디고·바이올렛·로즈 */
   :root{
-    --ink:#14161a; --muted:#6b7280; --faint:#9ca3af;
-    --line:#e5e7eb; --bg:#fff; --soft:#f6f7f9;
-    --brand:#2f6bff; --brand-dark:#1f4fd8; --accent:#12a150;
+    --ink:#16161d; --muted:#6a6d80; --faint:#9a9db0;
+    --line:#e4e5ef; --bg:#fff; --soft:#f5f6fa;
+    --brand:#4c55c2; --brand-dark:#3a41a0; --indigo:#4a64bc; --violet:#5045a8;
+    --accent:#5045a8;      /* 스펙 카드 테두리·라벨 */
+    --rose:#d2799b;        /* 강조 */
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:#4a4d55;font-family:'Noto Sans KR',system-ui,sans-serif;color:var(--ink)}
@@ -248,14 +251,15 @@ const html = `<!doctype html>
   .route{margin-top:9px;font:500 17px 'JetBrains Mono',monospace;color:var(--brand)}
 
   /* 표지 */
-  .cover-slide{justify-content:center;background:linear-gradient(160deg,#0f1116 0%,#1b2030 100%);color:#fff}
-  .cover-slide .pageno{color:#6b7280}
-  .cover-eyebrow{font:700 17px 'JetBrains Mono',monospace;color:#7cc4ff;letter-spacing:.16em}
+  .cover-slide{justify-content:center;color:#fff;
+    background:linear-gradient(150deg,#20214a 0%,#3a3a8f 46%,#5045a8 100%)}
+  .cover-slide .pageno{color:#8d8fc4}
+  .cover-eyebrow{font:700 17px 'JetBrains Mono',monospace;color:#b9bffc;letter-spacing:.16em}
   .cover h1{font-size:104px;font-weight:900;letter-spacing:-.035em;margin:22px 0 0;line-height:1}
-  .cover-sub{font-size:27px;color:#aab2c0;margin-top:20px;font-weight:500}
+  .cover-sub{font-size:27px;color:#c3c6ef;margin-top:20px;font-weight:500}
   .cover-meta{margin-top:72px;display:flex;flex-direction:column;gap:15px;
-    font:500 18px 'JetBrains Mono',monospace;color:#8b93a1}
-  .cover-meta span{display:inline-block;width:88px;color:#5c6472}
+    font:500 18px 'JetBrains Mono',monospace;color:#a4a7de}
+  .cover-meta span{display:inline-block;width:88px;color:#7477b4}
 
   /* 본문 2단 */
   .body{display:grid;grid-template-columns:minmax(0,1fr) 690px;gap:48px;flex:1;min-height:0}
@@ -291,7 +295,7 @@ const html = `<!doctype html>
   .proof li{position:relative;padding-left:19px;font-size:15.5px;line-height:1.6;
     color:#242830;margin-top:8px}
   .proof li::before{content:'';position:absolute;left:0;top:8px;width:8px;height:8px;
-    border-radius:2px;background:var(--accent)}
+    border-radius:2px;background:var(--rose)}
 
   /* 표 */
   table.grid{width:100%;border-collapse:collapse;font-size:19px}

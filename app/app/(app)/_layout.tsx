@@ -1,8 +1,11 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Text } from 'react-native';
+
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useUnreadCount } from '../../src/api/hooks';
+import { Icon, type IconName } from '../../src/components/Icon';
+import { Logo } from '../../src/components/Logo';
 import { useAuth } from '../../src/lib/AuthProvider';
 import { colors, fontSize } from '../../src/theme';
 
@@ -11,15 +14,23 @@ import { colors, fontSize } from '../../src/theme';
  * expo-router의 Tabs는 파일 기준으로 화면을 모두 등록하므로,
  * 해당 역할에 없는 탭은 href를 null로 두어 탭바에서 감춘다.
  */
-function TabIcon({ label, focused }: { label: string; focused: boolean }) {
+/** 선택된 탭은 채운 형태로 그려 상태를 분명히 한다. */
+function TabIcon({ name, focused }: { name: IconName; focused: boolean }) {
   return (
-    <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.45 }}>{label}</Text>
+    <Icon
+      name={name}
+      size={21}
+      filled={focused}
+      color={focused ? colors.primary : colors.textFaint}
+    />
   );
 }
 
 export default function AppTabsLayout() {
   const { user } = useAuth();
   const { data: unread } = useUnreadCount();
+  // 아이콘이 커져 기본 높이로는 라벨이 잘린다. 홈 인디케이터 여백까지 더해 계산한다.
+  const insets = useSafeAreaInsets();
 
   const isMember = user?.role === 'MEMBER';
   const isTrainer = user?.role === 'TRAINER';
@@ -32,8 +43,15 @@ export default function AppTabsLayout() {
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textFaint,
-        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
+        tabBarStyle: {
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
+          height: 74 + insets.bottom,
+          paddingTop: 10,
+          paddingBottom: insets.bottom + 12,
+        },
         tabBarLabelStyle: { fontSize: fontSize.xs, fontWeight: '600' },
+        tabBarIconStyle: { marginBottom: 1 },
         headerStyle: { backgroundColor: colors.surface },
         headerTitleStyle: { color: colors.text, fontSize: 17, fontWeight: '700' },
         headerTintColor: colors.primary,
@@ -44,7 +62,10 @@ export default function AppTabsLayout() {
         name="index"
         options={{
           title: '홈',
-          tabBarIcon: ({ focused }) => <TabIcon label="🏠" focused={focused} />,
+          // 홈에서는 제목 대신 브랜드 마크를 보여준다.
+          headerTitle: () => <Logo size={26} />,
+          headerTitleAlign: 'left',
+          tabBarIcon: ({ focused }) => <TabIcon name="home" focused={focused} />,
         }}
       />
 
@@ -53,7 +74,7 @@ export default function AppTabsLayout() {
         options={{
           title: '내 예약',
           href: isMember ? undefined : null,
-          tabBarIcon: ({ focused }) => <TabIcon label="🗓" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="calendar" focused={focused} />,
         }}
       />
 
@@ -62,7 +83,7 @@ export default function AppTabsLayout() {
         options={{
           title: '이용권',
           href: isMember ? undefined : null,
-          tabBarIcon: ({ focused }) => <TabIcon label="🎟" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="ticket" focused={focused} />,
         }}
       />
 
@@ -71,7 +92,7 @@ export default function AppTabsLayout() {
         options={{
           title: '내 수업',
           href: isTrainer ? undefined : null,
-          tabBarIcon: ({ focused }) => <TabIcon label="📋" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="clipboard" focused={focused} />,
         }}
       />
 
@@ -80,7 +101,7 @@ export default function AppTabsLayout() {
         options={{
           title: '운영',
           href: isAdmin ? undefined : null,
-          tabBarIcon: ({ focused }) => <TabIcon label="⚙️" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="sliders" focused={focused} />,
         }}
       />
 
@@ -89,7 +110,7 @@ export default function AppTabsLayout() {
         options={{
           title: '알림',
           tabBarBadge: badge,
-          tabBarIcon: ({ focused }) => <TabIcon label="🔔" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="bell" focused={focused} />,
         }}
       />
 
@@ -97,7 +118,7 @@ export default function AppTabsLayout() {
         name="profile"
         options={{
           title: '내 정보',
-          tabBarIcon: ({ focused }) => <TabIcon label="👤" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="user" focused={focused} />,
         }}
       />
     </Tabs>

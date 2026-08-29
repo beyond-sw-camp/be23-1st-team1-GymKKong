@@ -1,28 +1,37 @@
 /**
  * 앱 전체 디자인 토큰.
- * 색상은 라이트 테마 하나만 정의한다(다크 모드는 후속 작업).
+ *
+ * 팔레트는 브랜드 일러스트(폴더 + 덤벨)에서 뽑았다.
+ *   폴더 밝은 면 #4A64BC · 어두운 면 #5045A8 · 덤벨 손잡이 #D9B4C0
+ * 인디고와 바이올렛 사이를 주색으로 두고, 로즈를 강조색으로 쓴다.
  */
 
 export const colors = {
   // 브랜드
-  primary: '#2F6BFF',
-  primaryDark: '#1F4FD8',
-  primarySoft: '#EAF0FF',
+  primary: '#4C55C2',
+  primaryDark: '#3A41A0',
+  primarySoft: '#ECEEFB',
+  indigo: '#4A64BC',
+  violet: '#5045A8',
+
+  /** 로즈. 숫자나 배지처럼 시선을 끌어야 하는 작은 요소에만 쓴다. */
+  accent: '#D2799B',
+  accentSoft: '#FBEEF3',
 
   // 배경 / 표면
-  background: '#F6F7F9',
+  background: '#F5F6FA',
   surface: '#FFFFFF',
-  surfaceAlt: '#F1F3F6',
+  surfaceAlt: '#EFF0F6',
 
   // 텍스트
-  text: '#14161A',
-  textMuted: '#6B7280',
-  textFaint: '#9CA3AF',
+  text: '#16161D',
+  textMuted: '#6A6D80',
+  textFaint: '#9A9DB0',
   textInverse: '#FFFFFF',
 
   // 경계
-  border: '#E5E7EB',
-  borderStrong: '#D1D5DB',
+  border: '#E4E5EF',
+  borderStrong: '#CFD1E0',
 
   // 상태
   success: '#12A150',
@@ -34,7 +43,7 @@ export const colors = {
   info: '#0891B2',
   infoSoft: '#E0F2FE',
 
-  disabled: '#C7CBD1',
+  disabled: '#C3C5D4',
 } as const;
 
 export const spacing = {
@@ -65,10 +74,10 @@ export const fontSize = {
 /** Android는 elevation, iOS는 shadow*를 쓴다. */
 export const shadow = {
   card: {
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: '#1B1F3B',
+    shadowOpacity: 0.07,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 3 },
     elevation: 2,
   },
 } as const;
@@ -86,6 +95,9 @@ export const statusColor: Record<string, { bg: string; fg: string }> = {
   EXPIRED: { bg: colors.surfaceAlt, fg: colors.textMuted },
   REFUNDED: { bg: colors.dangerSoft, fg: colors.danger },
   PENDING: { bg: colors.warningSoft, fg: colors.warning },
+  GROUP: { bg: colors.primarySoft, fg: colors.primaryDark },
+  PERSONAL: { bg: colors.accentSoft, fg: colors.accent },
+  NOTICE: { bg: colors.accentSoft, fg: colors.accent },
 };
 
 export const statusLabel: Record<string, string> = {

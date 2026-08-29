@@ -1,1 +1,2 @@
 2026-08-30T05:51:22.624+09:00  INFO 1 --- [gymkkong-api] [nio-8090-exec-7] com.gymkkong.api.service.AuthService     : [인증코드] channel=EMAIL target=kim@example.com purpose=RESET_PASSWORD code=901917
+2026-08-30T06:50:18.593+09:00  INFO 1 --- [gymkkong-api] [nio-8090-exec-6] com.gymkkong.api.service.AuthService     : [인증코드] channel=EMAIL target=kim@example.com purpose=RESET_PASSWORD code=336848
