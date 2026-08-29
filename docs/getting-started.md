@@ -80,16 +80,59 @@ cd app && npx expo start
 
 강습 회차는 `CURDATE()` 기준 상대 날짜로 생성되므로 **언제 실행해도 예정 수업이 보입니다**.
 
-## 5. 스모크 테스트
+## 5. 검증
 
-백엔드가 떠 있는 상태에서 핵심 플로우를 한 번에 확인합니다.
+### API 스모크 테스트 (16개 항목)
+
+백엔드가 떠 있는 상태에서 서버 단 핵심 플로우를 확인합니다.
 
 ```bash
 cd backend/scripts && bash smoke-test.sh
 ```
 
 예약 → 이용권 차감 → 중복 예약 거부 → 취소 → 이용권 복원, 역할별 권한 분리,
-재환불 차단까지 16개 항목을 검사합니다.
+재환불 차단까지 검사합니다.
+
+### E2E (28개 시나리오)
+
+Expo 웹으로 띄운 앱을 Playwright가 실제 브라우저에서 주행합니다.
+**DB·백엔드·Metro가 모두 떠 있어야 합니다.**
+
+```bash
+cd app && npx expo start --web --port 8081
+```
+
+```bash
+cd app && npx playwright test
+```
+
+- 실행 전에 DB를 시드 상태로 되돌리므로 **몇 번을 돌려도 같은 결과**가 나옵니다.
+- 주행하면서 `docs/evidence/` 에 화면 캡처를 남깁니다.
+- 데이터만 직접 되돌리려면: `bash db/reset-seed.sh`
+
+### 증적 · 화면정의서
+
+```bash
+node tools/capture-console.mjs
+```
+
+스키마 검증·스모크 테스트·타입 검사·빌드·E2E를 **실제로 다시 실행해서**
+그 출력을 `docs/evidence/console/` 에 이미지와 텍스트로 남깁니다.
+(`--quick` 은 빌드·E2E 제외, `--render-only` 는 지난 출력으로 이미지만 다시 그림)
+
+```bash
+node tools/build-spec.mjs
+```
+
+캡처를 모아 화면정의서를 만듭니다. 산출물:
+
+| 파일 | 용도 |
+| --- | --- |
+| `docs/화면정의서.pdf` | 1920×1080 슬라이드 21장 |
+| `docs/spec-slides/S01~S21.png` | Figma·PPT에 그대로 넣을 수 있는 장당 이미지 |
+| `docs/화면정의서.html` | 브라우저로 바로 보기 (이미지 내장) |
+
+내용을 고치려면 `tools/spec-data.mjs` 를 수정하고 다시 실행하면 됩니다.
 
 ## 자주 겪는 문제
 

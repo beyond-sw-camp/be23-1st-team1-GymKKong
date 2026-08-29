@@ -1,6 +1,11 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import { errorCode, errorMessage } from '../../src/api/client';
 import {
@@ -10,6 +15,7 @@ import {
   useReserve,
   useSession,
 } from '../../src/api/hooks';
+import { useConfirm } from '../../src/components/ConfirmProvider';
 import { Badge, Button, Card, Divider, ErrorState, InfoRow, Loading } from '../../src/components/ui';
 import { useAuth } from '../../src/lib/AuthProvider';
 import { formatDate, formatTimeRange } from '../../src/lib/format';
@@ -33,6 +39,7 @@ export default function SessionDetailScreen() {
 
   const reserve = useReserve();
   const cancel = useCancelReservation();
+  const { confirm, notice } = useConfirm();
 
   const session = sessionQuery.data;
 
@@ -76,39 +83,39 @@ export default function SessionDetailScreen() {
       { sessionId, membershipId: usableMembership?.id },
       {
         onSuccess: () =>
-          Alert.alert(
-            '예약 완료',
-            `${formatDate(session.startAt)} ${formatTimeRange(session.startAt, session.endAt)}\n${session.programName}`,
-          ),
-        onError: (e) => {
+          void notice({
+            title: '예약 완료',
+            message: `${formatDate(session.startAt)} ${formatTimeRange(session.startAt, session.endAt)}\n${session.programName}`,
+          }),
+        onError: async (e) => {
           // 서버 코드별로 다음 행동을 안내한다.
-          const code = errorCode(e);
-          if (code === 'NO_USABLE_MEMBERSHIP') {
-            Alert.alert('이용권이 필요해요', errorMessage(e), [
-              { text: '닫기', style: 'cancel' },
-              { text: '이용권 보러가기', onPress: () => router.push(`/place/${session.placeId}`) },
-            ]);
+          if (errorCode(e) === 'NO_USABLE_MEMBERSHIP') {
+            const go = await confirm({
+              title: '이용권이 필요해요',
+              message: errorMessage(e),
+              confirmText: '이용권 보러가기',
+            });
+            if (go) router.push(`/place/${session.placeId}`);
             return;
           }
-          Alert.alert('예약 실패', errorMessage(e));
+          await notice({ title: '예약 실패', message: errorMessage(e) });
         },
       },
     );
   };
 
-  const onCancel = () => {
+  const onCancel = async () => {
     if (!myReservation) return;
-    Alert.alert('예약을 취소할까요?', '취소하면 이용권 1회가 복원됩니다.', [
-      { text: '닫기', style: 'cancel' },
-      {
-        text: '예약 취소',
-        style: 'destructive',
-        onPress: () =>
-          cancel.mutate(myReservation.id, {
-            onError: (e) => Alert.alert('취소 실패', errorMessage(e)),
-          }),
-      },
-    ]);
+    const ok = await confirm({
+      title: '예약을 취소할까요?',
+      message: '취소하면 이용권 1회가 복원됩니다.',
+      confirmText: '예약 취소',
+      destructive: true,
+    });
+    if (!ok) return;
+    cancel.mutate(myReservation.id, {
+      onError: (e) => void notice({ title: '취소 실패', message: errorMessage(e) }),
+    });
   };
 
   return (

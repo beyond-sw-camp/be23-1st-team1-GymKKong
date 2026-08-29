@@ -1,9 +1,16 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import { API_BASE_URL } from '../../src/api/client';
 import { useFavorites, useMyPayments } from '../../src/api/hooks';
+import { useConfirm } from '../../src/components/ConfirmProvider';
 import { Badge, Button, Card, Divider, InfoRow } from '../../src/components/ui';
 import { useAuth } from '../../src/lib/AuthProvider';
 import { formatDateTime, formatWon } from '../../src/lib/format';
@@ -21,12 +28,16 @@ export default function ProfileScreen() {
   const { user, signOut } = useAuth();
   const favorites = useFavorites();
   const payments = useMyPayments();
+  const { confirm } = useConfirm();
 
-  const confirmSignOut = () => {
-    Alert.alert('로그아웃할까요?', undefined, [
-      { text: '닫기', style: 'cancel' },
-      { text: '로그아웃', style: 'destructive', onPress: () => void signOut() },
-    ]);
+  const confirmSignOut = async () => {
+    const ok = await confirm({
+      title: '로그아웃할까요?',
+      message: '이 기기의 로그인 정보가 지워집니다.',
+      confirmText: '로그아웃',
+      destructive: true,
+    });
+    if (ok) await signOut();
   };
 
   if (!user) return null;

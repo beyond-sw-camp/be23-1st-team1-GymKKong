@@ -1,10 +1,17 @@
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import { errorMessage } from '../../src/api/client';
 import { useCheckAttendance, useRoster, useSession } from '../../src/api/hooks';
 import type { ReservationStatus } from '../../src/api/types';
+import { useConfirm } from '../../src/components/ConfirmProvider';
 import { Button, EmptyState, ErrorState, Loading } from '../../src/components/ui';
 import { formatDate, formatTimeRange } from '../../src/lib/format';
 import { colors, fontSize, radius, shadow, spacing } from '../../src/theme';
@@ -28,6 +35,7 @@ export default function RosterScreen() {
   const sessionQuery = useSession(sessionId);
   const rosterQuery = useRoster(sessionId);
   const check = useCheckAttendance(sessionId);
+  const { notice } = useConfirm();
 
   const [draft, setDraft] = useState<Record<number, ReservationStatus>>({});
 
@@ -49,8 +57,8 @@ export default function RosterScreen() {
   const save = () => {
     if (changed.length === 0) return;
     check.mutate(changed, {
-      onSuccess: () => Alert.alert('저장 완료', `${changed.length}명의 출석 상태를 반영했습니다.`),
-      onError: (e) => Alert.alert('저장 실패', errorMessage(e)),
+      onSuccess: () => void notice({ title: '저장 완료', message: `${changed.length}명의 출석 상태를 반영했습니다.` }),
+      onError: (e) => void notice({ title: '저장 실패', message: errorMessage(e) }),
     });
   };
 
@@ -108,6 +116,8 @@ export default function RosterScreen() {
                   return (
                     <Pressable
                       key={c.value}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: active }}
                       onPress={() =>
                         setDraft((prev) => ({ ...prev, [item.reservationId]: c.value }))
                       }
