@@ -1,0 +1,106 @@
+# 실행 방법
+
+DB → 백엔드 → 앱 순서로 띄웁니다.
+
+## 사전 준비
+
+| 도구 | 용도 | 비고 |
+| --- | --- | --- |
+| Docker | MariaDB 실행 | 필수 |
+| JDK 21 | 백엔드 빌드·실행 | 없으면 아래 "JDK 없이 실행" 참고 |
+| Node 20+ | Expo 앱 | |
+
+## 1. 데이터베이스
+
+`db/v2/01_schema.sql`과 `02_seed.sql`이 컨테이너 최초 기동 시 자동으로 적재됩니다.
+
+```bash
+docker compose up -d
+```
+
+- 접속: `localhost:3307` / DB `gymkkong_v2` / 계정 `gymkkong` / 비밀번호 `gymkkong`
+- 초기화하고 다시 넣으려면 볼륨까지 지웁니다:
+
+```bash
+docker compose down -v && docker compose up -d
+```
+
+## 2. 백엔드 (Spring Boot)
+
+```bash
+cd backend && ./gradlew bootRun
+```
+
+- 기본 포트 **8090** (8080은 다른 서비스가, 8081은 Expo Metro가 흔히 점유하므로 피했습니다)
+- Swagger UI: http://localhost:8090/swagger-ui.html
+- 환경변수로 덮어쓸 수 있습니다: `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `SERVER_PORT`, `JWT_SECRET`
+
+> `JWT_SECRET`은 운영에서 반드시 교체하세요. HS256이라 32바이트 이상이어야 합니다.
+
+### JDK 없이 실행
+
+로컬에 JDK가 없다면 컨테이너에서 빌드·실행할 수 있습니다.
+
+```bash
+docker run --rm -v "$PWD/backend:/app" -w /app gradle:8.12-jdk21 gradle bootJar
+```
+
+```bash
+docker run -d --name gymkkong-api -p 8090:8090 -v "$PWD/backend/build/libs:/libs:ro" -e SERVER_PORT=8090 -e "DB_URL=jdbc:mariadb://host.docker.internal:3307/gymkkong_v2" --add-host=host.docker.internal:host-gateway eclipse-temurin:21-jre java -jar /libs/gymkkong-api-0.1.0.jar
+```
+
+## 3. 앱 (Expo)
+
+```bash
+cd app && npx expo start
+```
+
+- Expo Go 앱으로 QR을 찍거나, 터미널에서 `a`(Android) / `i`(iOS)를 누릅니다.
+- API 주소는 자동으로 정해집니다.
+  - **실기기**: Expo가 알려주는 개발 PC의 LAN IP + `:8090`
+  - **Android 에뮬레이터**: `10.0.2.2:8090`
+  - **직접 지정**: `app/app.json`의 `extra.apiBaseUrl`에 전체 URL을 넣으면 그 값이 우선합니다.
+
+> 실기기에서 연결이 안 되면 PC 방화벽이 8090을 막고 있는지 확인하세요.
+> 휴대폰과 PC가 같은 Wi‑Fi에 있어야 합니다.
+
+## 4. 테스트 계정
+
+시드 데이터의 모든 계정 비밀번호는 `gymkkong1234`입니다.
+
+| 역할 | 이메일 | 비고 |
+| --- | --- | --- |
+| 회원 | `kim@example.com` | 그룹 10회권 보유(잔여 8회), 예약·출석 이력 있음 |
+| 회원 | `lee@example.com` | 20회권 + PT 10회권 보유 |
+| 회원 | `yoon@example.com` | 환불 완료 이용권 보유(재환불 거부 확인용) |
+| 트레이너 | `choi.trainer@gymkkong.com` | 강남점 승인 완료, 잠실점 승인 대기 |
+| 트레이너 | `han.teacher@gymkkong.com` | 홍대점 소속 |
+| 지점 관리자 | `admin.gangnam@gymkkong.com` | 강남점 담당 |
+| 최고 관리자 | `super@gymkkong.com` | 전 지점 |
+
+강습 회차는 `CURDATE()` 기준 상대 날짜로 생성되므로 **언제 실행해도 예정 수업이 보입니다**.
+
+## 5. 스모크 테스트
+
+백엔드가 떠 있는 상태에서 핵심 플로우를 한 번에 확인합니다.
+
+```bash
+cd backend/scripts && bash smoke-test.sh
+```
+
+예약 → 이용권 차감 → 중복 예약 거부 → 취소 → 이용권 복원, 역할별 권한 분리,
+재환불 차단까지 16개 항목을 검사합니다.
+
+## 자주 겪는 문제
+
+**포트 충돌**
+`8090`이 이미 쓰이면 `SERVER_PORT=9090 ./gradlew bootRun`처럼 바꾸고,
+`app/app.json`의 `extra.apiBaseUrl`도 같은 포트로 맞춰주세요.
+
+**`Schema-validation` 오류로 백엔드가 안 뜸**
+엔티티와 DB 스키마가 어긋난 경우입니다. `docker compose down -v && docker compose up -d`로
+스키마를 다시 적재하세요. 애플리케이션은 `ddl-auto: validate`라 스키마를 직접 만들지 않습니다.
+
+**인증번호를 못 받음**
+SMS/메일 발송기가 아직 붙어 있지 않습니다. 인증번호는 **백엔드 콘솔 로그**에
+`[인증코드] ... code=123456` 형태로 출력됩니다.

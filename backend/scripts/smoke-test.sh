@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # GymKKong API 스모크 테스트 — 예약 핵심 플로우 검증
 set -u
-API=http://localhost:8081
+API=http://localhost:8090
 PASS=0; FAIL=0
 
 ok()   { echo "  PASS  $1"; PASS=$((PASS+1)); }

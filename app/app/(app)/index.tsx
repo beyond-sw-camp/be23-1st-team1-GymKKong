@@ -128,10 +128,12 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
+  // 가로 ScrollView의 기본 정렬은 stretch라서, 지정하지 않으면 칩이 세로로 늘어난다.
   placeStrip: {
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
     gap: spacing.sm,
+    alignItems: 'center',
   },
   chip: {
     paddingHorizontal: spacing.lg,

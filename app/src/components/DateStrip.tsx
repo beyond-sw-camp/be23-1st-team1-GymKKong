@@ -52,7 +52,13 @@ export function DateStrip({ selected, onSelect, days = 14 }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { paddingHorizontal: spacing.lg, paddingVertical: spacing.md, gap: spacing.sm },
+  // 가로 ScrollView의 기본 정렬은 stretch라서, 지정하지 않으면 날짜 칸이 세로로 늘어난다.
+  container: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    gap: spacing.sm,
+    alignItems: 'center',
+  },
   item: {
     width: 48,
     paddingVertical: spacing.sm,
