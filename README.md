@@ -1486,7 +1486,7 @@ ORDER BY 환불횟수 DESC;
 문제 정의부터 기획 · UX/UI · 시스템 설계 · 개발 · 검증까지 하나의 흐름으로 정리한 문서입니다.
 각 단계가 다음 단계의 근거가 되도록 이었습니다 — **문제 → 판단 → 설계 → 기술 → 결과**.
 
-- 🔗 [기획서 전체 보기 (PNG)](docs/case-study/gymkkong-case-study.png) — 29개 섹션 · 1400 × 26135
+- 🔗 [기획서 전체 보기 (PNG)](docs/case-study/gymkkong-case-study.png) — 29개 섹션 · 1680 × 31362
 - 🔗 [Figma 원본](https://www.figma.com/design/RtW05c2if9ejKErMXbYALb)
 
 | 구성 | 내용 |

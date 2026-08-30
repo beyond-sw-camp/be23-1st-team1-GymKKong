@@ -138,7 +138,7 @@ node tools/build-spec.mjs
 
 | 파일 | 용도 |
 | --- | --- |
-| `docs/case-study/gymkkong-case-study.png` | 전체 보드 (1401 × 26067) |
+| `docs/case-study/gymkkong-case-study.png` | 전체 보드 (1680 × 31362) |
 
 원본은 Figma 디자인 파일에 있습니다 — https://www.figma.com/design/RtW05c2if9ejKErMXbYALb
 내용을 고치면 Figma에서 프레임을 다시 내보내 이 파일을 교체하면 됩니다.
