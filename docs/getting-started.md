@@ -128,7 +128,7 @@ node tools/build-spec.mjs
 
 | 파일 | 용도 |
 | --- | --- |
-| `docs/화면정의서.pdf` | 1920×1080 슬라이드 21장 |
+| `docs/화면정의서.pdf` | 1920×1080 슬라이드 22장 |
 | `docs/spec-slides/S01~S21.png` | 장당 이미지 |
 | `docs/화면정의서.html` | 브라우저로 바로 보기 (이미지 내장) |
 
@@ -136,7 +136,7 @@ node tools/build-spec.mjs
 
 ### Figma Slides
 
-같은 내용을 Figma Slides로도 만들어 두었습니다. 21장, 4개 섹션(들어가며 / 회원 /
+같은 내용을 Figma Slides로도 만들어 두었습니다. 22장, 4개 섹션(들어가며 / 회원 /
 트레이너·관리자 / 증적·마무리)이며 캡처 44장이 실제 이미지로 들어가 있습니다.
 
 - https://www.figma.com/slides/qieUXv3DkmEcmfcyaAb9B8

@@ -15,7 +15,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { consoleShots, idMap, meta, scope, screens } from './spec-data.mjs';
+import { architecture, consoleShots, idMap, meta, scope, screens } from './spec-data.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(join(ROOT, 'app', 'package.json'));
@@ -106,8 +106,8 @@ function shotStrip(shots) {
   </div>`;
 }
 
-// 총 페이지 수를 먼저 센다(표지 + 요약 + ID맵 + 화면들 + 콘솔들 + 마무리).
-total = 3 + screens.length + Math.ceil(consoleShots.length / 2) + 1;
+// 총 페이지 수를 먼저 센다(표지 + 아키텍처 + 요약 + ID맵 + 화면들 + 콘솔들 + 마무리).
+total = 4 + screens.length + Math.ceil(consoleShots.length / 2) + 1;
 
 // --- 표지
 slide(
@@ -123,6 +123,27 @@ slide(
    </div>`,
   'cover-slide',
 );
+
+// --- 아키텍처
+{
+  const uri = dataUri('architecture-overview.png');
+  slide(
+    `${header('ARCHITECTURE · 시스템 구성', '시스템 아키텍처', 'Expo 앱 · Spring Boot REST API · MariaDB — 로컬 Docker 환경')}
+     <div class="arch">
+       ${uri ? `<img src="${uri}" alt="시스템 아키텍처">` : '<div class="missing">도식 없음<br><small>node tools/build-architecture.mjs</small></div>'}
+       <div class="arch-col">
+         ${architecture
+           .map(
+             (a) => `<div class="arch-item" style="border-color:${a.color}">
+               <h3>${esc(a.label)}</h3>
+               <p>${esc(a.body)}</p>
+             </div>`,
+           )
+           .join('')}
+       </div>
+     </div>`,
+  );
+}
 
 // --- 전수 범위
 slide(
@@ -249,6 +270,15 @@ const html = `<!doctype html>
   .eyebrow{font:700 15px 'JetBrains Mono',monospace;color:var(--accent);letter-spacing:.08em}
   .hd h1{font-size:46px;font-weight:900;letter-spacing:-.02em;margin:8px 0 0;line-height:1.1}
   .route{margin-top:9px;font:500 17px 'JetBrains Mono',monospace;color:var(--brand)}
+
+  /* 아키텍처 */
+  .arch{display:flex;gap:56px;flex:1;min-height:0}
+  .arch img{height:100%;width:auto;align-self:flex-start;
+    border:1px solid var(--line);border-radius:8px}
+  .arch-col{flex:1;display:flex;flex-direction:column;justify-content:flex-start;gap:26px;padding-top:4px}
+  .arch-item{border-left:3px solid;padding-left:17px}
+  .arch-item h3{margin:0;font-size:19px;font-weight:700;letter-spacing:-.01em}
+  .arch-item p{margin:7px 0 0;font-size:15px;line-height:1.66;color:var(--muted)}
 
   /* 표지 */
   .cover-slide{justify-content:center;color:#fff;

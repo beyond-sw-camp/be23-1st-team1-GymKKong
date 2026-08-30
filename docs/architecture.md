@@ -612,7 +612,7 @@ flowchart LR
     O1["캡처 46장"]
     O2["녹화 28건<br/>webm · mp4"]
     O3["콘솔 8건"]
-    O4["화면정의서 21장<br/>PDF · Figma"]
+    O4["화면정의서 22장<br/>PDF · Figma"]
   end
 
   D1 --> D2 --> D3
