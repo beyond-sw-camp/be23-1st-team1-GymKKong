@@ -17,7 +17,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(join(ROOT, 'app', 'package.json'));
 const { chromium } = require('@playwright/test');
 
-const OUT_DIR = join(ROOT, 'docs', 'evidence');
+const OUT_DIR = join(ROOT, 'docs');
 const OUT_PNG = join(OUT_DIR, 'architecture-overview.png');
 const KEEP_HTML = process.argv.includes('--html');
 

@@ -117,7 +117,7 @@ export default function globalTeardown() {
       '# E2E 시나리오 녹화',
       '',
       '`npx playwright test` 가 전 시나리오를 주행하며 자동으로 남긴 화면 녹화다.',
-      '캡처 이미지(`docs/evidence/*.png`)와 같은 실행에서 나온 것이라 서로 대응된다.',
+      '캡처 이미지(`docs/evidence/screens/`)와 같은 실행에서 나온 것이라 서로 대응된다.',
       '',
       '| # | 시나리오 | 파일 |',
       '| --- | --- | --- |',

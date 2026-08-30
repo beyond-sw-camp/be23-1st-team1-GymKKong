@@ -18,8 +18,10 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   retries: 0,
-  timeout: 90_000,
-  expect: { timeout: 15_000 },
+  // 로컬 머신이 다른 작업으로 눌려 있으면 앱이 2~3배 느려진다. 그 상황에서
+  // 논리 오류가 아닌 대기 시간 때문에 실패하지 않도록 여유를 둔다.
+  timeout: 120_000,
+  expect: { timeout: 30_000 },
   reporter: [['list'], ['html', { outputFolder: '../docs/evidence/_report', open: 'never' }]],
   use: {
     baseURL: process.env.WEB_URL ?? 'http://localhost:8081',

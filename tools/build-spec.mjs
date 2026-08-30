@@ -1,17 +1,17 @@
 /**
  * 화면정의서 생성.
  *
- * 1920x1080 슬라이드를 HTML로 만들고, Playwright로 PDF와 PNG를 뽑는다.
- * 캡처 이미지는 docs/evidence/ 에 있는 실제 E2E 산출물을 data URI로 박아
+ * 1920x1080 슬라이드를 HTML로 조립하고, Playwright로 PDF를 뽑는다.
+ * 캡처 이미지는 docs/evidence/screens/ 에 있는 실제 E2E 산출물을 data URI로 박아
  * 파일 하나만 열어도 그대로 보이게 한다.
  *
  *   node tools/build-spec.mjs
  *
- * 산출물: docs/화면정의서.pdf, docs/화면정의서.html, docs/spec-slides/*.png
+ * 산출물: docs/화면정의서.pdf
  */
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -23,14 +23,13 @@ const { chromium } = require('@playwright/test');
 
 const EV = join(ROOT, 'docs', 'evidence');
 const OUT_DIR = join(ROOT, 'docs');
-const SLIDE_DIR = join(OUT_DIR, 'spec-slides');
 
 const W = 1920;
 const H = 1080;
 
 /** 이미지를 data URI로. 없으면 null을 돌려주고 자리표시자를 그린다. */
-function dataUri(relPath) {
-  const p = join(EV, relPath);
+function dataUri(relPath, base = EV) {
+  const p = join(base, relPath);
   if (!existsSync(p)) {
     console.warn(`  ! 캡처 없음: ${relPath}`);
     return null;
@@ -92,7 +91,7 @@ function shotStrip(shots) {
   return `<div class="shots shots-${shots.length}">
     ${shots
       .map((s, i) => {
-        const uri = dataUri(s.file);
+        const uri = dataUri(join('screens', s.file));
         return `<figure>
           <figcaption><i>${i + 1}</i> ${esc(s.caption)}</figcaption>
           ${
@@ -126,7 +125,7 @@ slide(
 
 // --- 아키텍처
 {
-  const uri = dataUri('architecture-overview.png');
+  const uri = dataUri('architecture-overview.png', OUT_DIR);
   slide(
     `${header('ARCHITECTURE · 시스템 구성', '시스템 아키텍처', 'Expo 앱 · Spring Boot REST API · MariaDB — 로컬 Docker 환경')}
      <div class="arch">
@@ -362,10 +361,6 @@ const html = `<!doctype html>
 </style></head>
 <body>${slides.join('\n')}</body></html>`;
 
-mkdirSync(SLIDE_DIR, { recursive: true });
-const htmlPath = join(OUT_DIR, '화면정의서.html');
-writeFileSync(htmlPath, html, 'utf8');
-console.log(`HTML  ${htmlPath}`);
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: W, height: H } });
@@ -381,11 +376,5 @@ await page.pdf({
 });
 console.log(`PDF   ${join(OUT_DIR, '화면정의서.pdf')} (${slides.length}장)`);
 
-// PNG — Figma·PPT로 가져다 쓰기 좋게 장당 파일로
-const els = await page.$$('.slide');
-for (let i = 0; i < els.length; i++) {
-  await els[i].screenshot({ path: join(SLIDE_DIR, `S${String(i + 1).padStart(2, '0')}.png`) });
-}
-console.log(`PNG   ${SLIDE_DIR} (${els.length}장)`);
 
 await browser.close();

@@ -1,7 +1,7 @@
 /**
  * 화면정의서 내용.
  *
- * shots에 적는 파일명은 docs/evidence/ 에 실제로 존재하는 캡처다.
+ * shots에 적는 파일명은 docs/evidence/screens/ 에 실제로 존재하는 캡처다.
  * 캡처는 Playwright E2E(app/e2e)가 실제 브라우저에서 앱을 주행하며 남긴 것이고,
  * 콘솔 증적은 tools/capture-console.mjs 가 실제 명령을 다시 실행해 남긴 것이다.
  */
@@ -15,7 +15,7 @@ export const meta = {
 
 /**
  * 아키텍처 슬라이드의 우측 요약.
- * 도식(docs/evidence/architecture-overview.png)의 영역 색을 왼쪽 막대에 그대로 쓴다.
+ * 도식(docs/architecture-overview.png)의 영역 색을 왼쪽 막대에 그대로 쓴다.
  */
 export const architecture = [
   { label: '클라이언트', color: '#E8842B', body: 'Expo 앱 하나로 회원 · 트레이너 · 관리자를 모두 다룬다. 역할에 따라 탭 구성이 달라진다.' },

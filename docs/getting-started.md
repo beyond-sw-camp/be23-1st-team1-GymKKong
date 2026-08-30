@@ -107,7 +107,7 @@ cd app && npx playwright test
 ```
 
 - 실행 전에 DB를 시드 상태로 되돌리므로 **몇 번을 돌려도 같은 결과**가 나옵니다.
-- 주행하면서 `docs/evidence/` 에 화면 캡처를 남깁니다.
+- 주행하면서 `docs/evidence/screens/` 에 화면 캡처를 남깁니다.
 - 데이터만 직접 되돌리려면: `bash db/reset-seed.sh`
 
 ### 증적 · 화면정의서
@@ -129,8 +129,19 @@ node tools/build-spec.mjs
 | 파일 | 용도 |
 | --- | --- |
 | `docs/화면정의서.pdf` | 1920×1080 슬라이드 22장 |
-| `docs/spec-slides/S01~S21.png` | 장당 이미지 |
-| `docs/화면정의서.html` | 브라우저로 바로 보기 (이미지 내장) |
+
+장당 이미지는 Figma 덱에서 뽑아 `docs/slides/S01~S22.png` 에 두었습니다.
+
+### 기획서 (Product Case Study)
+
+문제 정의부터 검증까지 한 장으로 정리한 세로 보드입니다.
+
+| 파일 | 용도 |
+| --- | --- |
+| `docs/case-study/gymkkong-case-study.png` | 전체 보드 (1401 × 26067) |
+
+원본은 Figma 디자인 파일에 있습니다 — https://www.figma.com/design/RtW05c2if9ejKErMXbYALb
+내용을 고치면 Figma에서 프레임을 다시 내보내 이 파일을 교체하면 됩니다.
 
 내용을 고치려면 `tools/spec-data.mjs` 를 수정하고 다시 실행하면 됩니다.
 
@@ -150,13 +161,13 @@ E2E 한 번 실행으로 아래가 함께 나옵니다.
 
 | 종류 | 위치 | 수량 |
 | --- | --- | --- |
-| 화면 캡처 | `docs/evidence/*.png` | 46장 |
+| 화면 캡처 | `docs/evidence/screens/*.png` | 46장 |
 | 시나리오 녹화 | `docs/evidence/video/*.webm` · `*.mp4` | 28건 × 2 포맷 |
 | 콘솔 출력 | `docs/evidence/console/*.png` · `*.txt` | 8건 |
 
 녹화 목록은 `docs/evidence/video/INDEX.md` 에 시나리오 이름과 함께 정리됩니다.
-영상 파일은 용량이 커서 저장소에는 넣지 않고 목록만 남깁니다 — 필요하면
-`npx playwright test` 로 다시 만들 수 있습니다.
+영상은 webm과 mp4 두 포맷으로 저장소에 함께 넣었습니다 — 다시 만들려면
+`npx playwright test` 를 돌리면 됩니다.
 
 ## 7. 설계 문서
 
