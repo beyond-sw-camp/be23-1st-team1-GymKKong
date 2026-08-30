@@ -1477,7 +1477,7 @@ ORDER BY 환불횟수 DESC;
 - 🔗 [RBAC — 역할 기반 접근 제어](docs/rbac.md)
 - 🔗 [ERD — 스키마 v2](docs/erd.md)
 - 🔗 [스키마 v2 — 왜 바꿨는가](docs/schema-v2.md)
-- 🔗 [화면정의서 (PDF)](docs/화면정의서.pdf) · [슬라이드 이미지](docs/slides) · [Figma Slides](https://www.figma.com/slides/qieUXv3DkmEcmfcyaAb9B8)
+- 🔗 [화면정의서 (PDF)](docs/화면정의서.pdf) · [Figma Slides](https://www.figma.com/slides/qieUXv3DkmEcmfcyaAb9B8)
 
 ***
 
@@ -1486,15 +1486,8 @@ ORDER BY 환불횟수 DESC;
 문제 정의부터 기획 · UX/UI · 시스템 설계 · 개발 · 검증까지 하나의 흐름으로 정리한 문서입니다.
 각 단계가 다음 단계의 근거가 되도록 이었습니다 — **문제 → 판단 → 설계 → 기술 → 결과**.
 
-<div align='center'>
-
-<a href="docs/case-study/gymkkong-case-study.png">
-<img src="docs/case-study/gymkkong-case-study.png" alt="GymKKong Product Case Study" width="900" />
-</a>
-
-<sub>클릭하면 원본 크기로 볼 수 있습니다 · 1401 × 26067 · <a href="https://www.figma.com/design/RtW05c2if9ejKErMXbYALb">Figma 원본</a></sub>
-
-</div>
+- 🔗 [기획서 전체 보기 (PNG)](docs/case-study/gymkkong-case-study.png) — 29개 섹션 · 1400 × 26135
+- 🔗 [Figma 원본](https://www.figma.com/design/RtW05c2if9ejKErMXbYALb)
 
 | 구성 | 내용 |
 | --- | --- |

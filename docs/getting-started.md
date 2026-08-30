@@ -130,7 +130,7 @@ node tools/build-spec.mjs
 | --- | --- |
 | `docs/화면정의서.pdf` | 1920×1080 슬라이드 22장 |
 
-장당 이미지는 Figma 덱에서 뽑아 `docs/slides/S01~S22.png` 에 두었습니다.
+장당 이미지는 저장소에 두지 않습니다. 필요하면 Figma 덱에서 프레임을 내보내면 됩니다.
 
 ### 기획서 (Product Case Study)
 
