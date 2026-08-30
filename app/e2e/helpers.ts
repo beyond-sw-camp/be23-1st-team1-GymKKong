@@ -6,7 +6,7 @@ export const WEB_URL = process.env.WEB_URL ?? 'http://localhost:8081';
 export const API_URL = process.env.API_URL ?? 'http://localhost:8090';
 
 /** 증적 이미지가 쌓이는 곳. 화면정의서가 이 파일들을 그대로 쓴다. */
-export const EVIDENCE_DIR = join(__dirname, '..', '..', 'docs', 'evidence');
+export const EVIDENCE_DIR = join(__dirname, '..', '..', 'docs', 'evidence', 'screens');
 
 export const ACCOUNTS = {
   member: { email: 'kim@example.com', password: 'gymkkong1234', name: '김철수' },

@@ -3,7 +3,7 @@
 앱 · API · DB가 어떻게 나뉘어 있고, 요청이 어떤 경로로 흐르는지 정리한 문서입니다.
 권한 설계는 분량이 커서 [rbac.md](rbac.md)로 따로 뺐습니다.
 
-![GymKKong 시스템 아키텍처](evidence/architecture-overview.png)
+![GymKKong 시스템 아키텍처](architecture-overview.png)
 
 > 위 도식은 `node tools/build-architecture.mjs`로 그립니다. 구조가 바뀌면 다시 돌려 갱신하세요.
 
@@ -612,7 +612,7 @@ flowchart LR
     O1["캡처 46장"]
     O2["녹화 28건<br/>webm · mp4"]
     O3["콘솔 8건"]
-    O4["화면정의서 21장<br/>PDF · Figma"]
+    O4["화면정의서 22장<br/>PDF · Figma"]
   end
 
   D1 --> D2 --> D3

@@ -39,3 +39,9 @@ docs/evidence/_report/
 # E2E 녹화 원본 작업 폴더. 정리 후 지워지므로 추적하지 않는다.
 # 정리된 녹화본(webm/mp4)은 증적이라 저장소에 포함한다.
 docs/evidence/video/_raw/
+
+# Playwright HTML 리포트 (생성물)
+docs/evidence/_report/
+
+# 화면정의서 미리보기 (생성물)
+docs/.preview/

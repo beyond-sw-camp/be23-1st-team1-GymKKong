@@ -1,7 +1,7 @@
 /**
  * 화면정의서 내용.
  *
- * shots에 적는 파일명은 docs/evidence/ 에 실제로 존재하는 캡처다.
+ * shots에 적는 파일명은 docs/evidence/screens/ 에 실제로 존재하는 캡처다.
  * 캡처는 Playwright E2E(app/e2e)가 실제 브라우저에서 앱을 주행하며 남긴 것이고,
  * 콘솔 증적은 tools/capture-console.mjs 가 실제 명령을 다시 실행해 남긴 것이다.
  */
@@ -12,6 +12,19 @@ export const meta = {
   repo: 'beyond-sw-camp/be23-1st-team1-GymKKong · feat/rn-app',
   stack: 'React Native (Expo SDK 57) · Spring Boot 3.4 · MariaDB 11.4',
 };
+
+/**
+ * 아키텍처 슬라이드의 우측 요약.
+ * 도식(docs/architecture-overview.png)의 영역 색을 왼쪽 막대에 그대로 쓴다.
+ */
+export const architecture = [
+  { label: '클라이언트', color: '#E8842B', body: 'Expo 앱 하나로 회원 · 트레이너 · 관리자를 모두 다룬다. 역할에 따라 탭 구성이 달라진다.' },
+  { label: '인증 계층', color: '#8E93A6', body: '세션 없는 JWT. 필터가 Bearer를 검증해 AuthUser를 주입하고, 예외는 ErrorCode로 변환한다.' },
+  { label: '애플리케이션', color: '#4C55C2', body: 'Controller 7 · Service 8 · Repository 21 · Entity 21. 예약은 비관적 락과 UNIQUE 제약으로 두 겹 방어.' },
+  { label: '데이터', color: '#E8842B', body: 'MariaDB 11.4 · 23 테이블 / 2 뷰. ddl-auto: validate 로 스키마를 대조한다.' },
+  { label: '검증', color: '#1F9D57', body: '스모크 22/22 · E2E 28/28 · 타입 검사 · 다이어그램 34/34. 증적은 docs/evidence.' },
+  { label: '미연동', color: '#7A5FD3', body: 'PG 결제 · SMS/Email · 푸시 · 배포. 돈이나 외부 계약이 필요해 로컬에서는 대체 동작.' },
+];
 
 /** 전수 범위 매트릭스. */
 export const scope = [

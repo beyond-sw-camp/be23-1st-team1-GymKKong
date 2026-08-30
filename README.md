@@ -1459,7 +1459,7 @@ ORDER BY 환불횟수 DESC;
 
 ***
 
-## 📱 모바일 앱 확장 (feat/rn-app 브랜치)
+## 모바일 앱 확장 (feat/rn-app 브랜치)
 
 1차 프로젝트의 DB 설계 위에 **REST API와 React Native 앱**을 올린 작업입니다.
 원본 `DDL/`, `DML/`은 그대로 두고 `db/v2/`에 재설계한 스키마를 추가했습니다.
@@ -1473,16 +1473,37 @@ ORDER BY 환불횟수 DESC;
 | `tools/` | 증적 캡처 · 화면정의서 생성 · 아키텍처 도식 · mermaid 검사 |
 
 - 🔗 [실행 방법](docs/getting-started.md)
-- 🔗 [아키텍처 · 시퀀스 플로우](docs/architecture.md) — [한 장 도식](docs/evidence/architecture-overview.png)
+- 🔗 [아키텍처 · 시퀀스 플로우](docs/architecture.md) — [한 장 도식](docs/architecture-overview.png)
 - 🔗 [RBAC — 역할 기반 접근 제어](docs/rbac.md)
 - 🔗 [ERD — 스키마 v2](docs/erd.md)
 - 🔗 [스키마 v2 — 왜 바꿨는가](docs/schema-v2.md)
 - 🔗 [화면정의서 (PDF)](docs/화면정의서.pdf) · [Figma Slides](https://www.figma.com/slides/qieUXv3DkmEcmfcyaAb9B8)
 
+***
+
+### 기획서 — Product Case Study
+
+문제 정의부터 기획 · UX/UI · 시스템 설계 · 개발 · 검증까지 하나의 흐름으로 정리한 문서입니다.
+각 단계가 다음 단계의 근거가 되도록 이었습니다 — **문제 → 판단 → 설계 → 기술 → 결과**.
+
+- 🔗 [기획서 전체 보기 (PNG)](docs/case-study/gymkkong-case-study.png) — 29개 섹션 · 1400 × 26135
+- 🔗 [Figma 원본](https://www.figma.com/design/RtW05c2if9ejKErMXbYALb)
+
+| 구성 | 내용 |
+| --- | --- |
+| 01–05 | 프로젝트 개요 · 문제 정의 · 리서치 · 사용자 정의 · As-Is 흐름 |
+| 06–10 | UX 인사이트 · 제품 전략 · 기능 정의 · IA · 유저 플로우 |
+| 11–14 | UX 결정과 이유 · UI 디자인 · 브랜딩/디자인 시스템 · 핵심 기능 심층 |
+| 15–22 | 시스템 아키텍처 · 기술 의사결정 · 도메인 모델 · API · 시퀀스 · 프론트/백엔드 · 인프라 |
+| 23–28 | 기술적 난관 · QA · 결과 · Before/After · 회고 · 포트폴리오 요약 |
+
+***
+
 ### 증적
 
 E2E 한 번 실행으로 화면 캡처 46장 · 시나리오 녹화 28건(webm·mp4) ·
-콘솔 출력 8건이 함께 나옵니다. 전부 `docs/evidence/` 아래에 있습니다.
+콘솔 출력 8건이 함께 나옵니다. 전부 `docs/evidence/` 아래에 있습니다
+(`screens/` · `video/` · `console/`).
 
 ### 한 줄 요약
 

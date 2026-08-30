@@ -1,21 +1,24 @@
 /**
  * 화면정의서 생성.
  *
- * 1920x1080 슬라이드를 HTML로 만들고, Playwright로 PDF와 PNG를 뽑는다.
- * 캡처 이미지는 docs/evidence/ 에 있는 실제 E2E 산출물을 data URI로 박아
+ * 1920x1080 슬라이드를 HTML로 조립하고, Playwright로 PDF를 뽑는다.
+ * 캡처 이미지는 docs/evidence/screens/ 에 있는 실제 E2E 산출물을 data URI로 박아
  * 파일 하나만 열어도 그대로 보이게 한다.
  *
- *   node tools/build-spec.mjs
+ * 산출물: docs/화면정의서.pdf
  *
- * 산출물: docs/화면정의서.pdf, docs/화면정의서.html, docs/spec-slides/*.png
+ * --preview 를 주면 장당 PNG를 PREVIEW_DIR(기본 docs/.preview)에 남긴다.
+ * 저장소에 넣지 않고 눈으로 확인할 때만 쓴다.
+ *
+ * 산출물: docs/화면정의서.pdf
  */
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { consoleShots, idMap, meta, scope, screens } from './spec-data.mjs';
+import { architecture, consoleShots, idMap, meta, scope, screens } from './spec-data.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(join(ROOT, 'app', 'package.json'));
@@ -23,20 +26,31 @@ const { chromium } = require('@playwright/test');
 
 const EV = join(ROOT, 'docs', 'evidence');
 const OUT_DIR = join(ROOT, 'docs');
-const SLIDE_DIR = join(OUT_DIR, 'spec-slides');
 
 const W = 1920;
 const H = 1080;
 
 /** 이미지를 data URI로. 없으면 null을 돌려주고 자리표시자를 그린다. */
-function dataUri(relPath) {
-  const p = join(EV, relPath);
+function dataUri(relPath, base = EV) {
+  const p = join(base, relPath);
   if (!existsSync(p)) {
     console.warn(`  ! 캡처 없음: ${relPath}`);
     return null;
   }
   return `data:image/png;base64,${readFileSync(p).toString('base64')}`;
 }
+
+/** 브랜드 마크 — app/src/components/Logo.tsx 와 같은 도형이다. */
+const LOGO_SVG = `<svg width="46" height="46" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="gk" x1="6" y1="14" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#5B6BD0"/><stop offset="0.55" stop-color="#4A64BC"/><stop offset="1" stop-color="#5045A8"/></linearGradient></defs>
+<path d="M4 17a7 7 0 0 1 7-7h12.7a4 4 0 0 1 2.83 1.17l3.66 3.66A4 4 0 0 0 33.02 16H53a7 7 0 0 1 7 7v24a7 7 0 0 1-7 7H11a7 7 0 0 1-7-7V17Z" fill="url(#gk)"/>
+<g transform="rotate(-14 32 37)">
+<rect x="26.5" y="35.2" width="11" height="3.6" rx="1.8" fill="#F0C3D0"/>
+<rect x="21.6" y="28.6" width="6.2" height="16.8" rx="2.6" fill="#FFFFFF"/>
+<rect x="36.2" y="28.6" width="6.2" height="16.8" rx="2.6" fill="#FFFFFF"/>
+<rect x="16.9" y="31.9" width="4.4" height="10.2" rx="2" fill="#FFFFFF" opacity="0.85"/>
+<rect x="42.7" y="31.9" width="4.4" height="10.2" rx="2" fill="#FFFFFF" opacity="0.85"/></g></svg>`;
 
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -92,7 +106,7 @@ function shotStrip(shots) {
   return `<div class="shots shots-${shots.length}">
     ${shots
       .map((s, i) => {
-        const uri = dataUri(s.file);
+        const uri = dataUri(join('screens', s.file));
         return `<figure>
           <figcaption><i>${i + 1}</i> ${esc(s.caption)}</figcaption>
           ${
@@ -106,23 +120,59 @@ function shotStrip(shots) {
   </div>`;
 }
 
-// 총 페이지 수를 먼저 센다(표지 + 요약 + ID맵 + 화면들 + 콘솔들 + 마무리).
-total = 3 + screens.length + Math.ceil(consoleShots.length / 2) + 1;
+// 총 페이지 수를 먼저 센다(표지 + 아키텍처 + 요약 + ID맵 + 화면들 + 콘솔들 + 마무리).
+total = 4 + screens.length + Math.ceil(consoleShots.length / 2) + 1;
 
 // --- 표지
-slide(
-  `<div class="cover">
-     <div class="cover-eyebrow">SCREEN DEFINITION</div>
-     <h1>${esc(meta.title)}</h1>
-     <p class="cover-sub">${esc(meta.subtitle)}</p>
-     <div class="cover-meta">
+// Figma 덱 표지와 같은 구성이다. 두 문서가 같은 얼굴을 갖도록 좌표까지 맞춘다.
+{
+  const ph = (file) => dataUri(join('screens', file));
+  slide(
+    `<div class="cv-tile">${LOGO_SVG}</div>
+     <div class="cv-word">짐꽁</div>
+     <div class="cv-latin">GYMKKONG</div>
+     <div class="cv-eyebrow">SCREEN DEFINITION</div>
+     <div class="cv-t1">GymKKong</div>
+     <div class="cv-t2">화면정의서</div>
+     <div class="cv-bar"></div>
+     <div class="cv-sub">${esc(meta.subtitle)}</div>
+     <div class="cv-meta">
        <div><span>저장소</span>${esc(meta.repo)}</div>
        <div><span>스택</span>${esc(meta.stack)}</div>
-       <div><span>캡처</span>Playwright E2E 28/28 주행 중 자동 수집 · 실제 화면</div>
+       <div><span>캡처</span>Playwright E2E 주행 중 자동 수집 — 목업이 아닌 실제 화면</div>
      </div>
-   </div>`,
-  'cover-slide',
-);
+     <div class="cv-pills">
+       ${['화면 14', '캡처 46장', '녹화 28건', 'E2E 28 / 28', '스모크 22 / 22']
+         .map((t) => `<span>${t}</span>`).join('')}
+     </div>
+     <img class="cv-ph cv-ph1" src="${ph('11_memberships.png')}" alt="이용권">
+     <img class="cv-ph cv-ph3" src="${ph('27_trainer-roster.png')}" alt="출석 관리">
+     <img class="cv-ph cv-ph2" src="${ph('03_home-timetable.png')}" alt="홈">
+     <div class="cv-cap">회원 이용권  ·  회원 홈  ·  트레이너 출석 관리</div>`,
+    'cover-slide',
+  );
+}
+
+// --- 아키텍처
+{
+  const uri = dataUri('architecture-overview.png', OUT_DIR);
+  slide(
+    `${header('ARCHITECTURE · 시스템 구성', '시스템 아키텍처', 'Expo 앱 · Spring Boot REST API · MariaDB — 로컬 Docker 환경')}
+     <div class="arch">
+       ${uri ? `<img src="${uri}" alt="시스템 아키텍처">` : '<div class="missing">도식 없음<br><small>node tools/build-architecture.mjs</small></div>'}
+       <div class="arch-col">
+         ${architecture
+           .map(
+             (a) => `<div class="arch-item" style="border-color:${a.color}">
+               <h3>${esc(a.label)}</h3>
+               <p>${esc(a.body)}</p>
+             </div>`,
+           )
+           .join('')}
+       </div>
+     </div>`,
+  );
+}
 
 // --- 전수 범위
 slide(
@@ -250,16 +300,45 @@ const html = `<!doctype html>
   .hd h1{font-size:46px;font-weight:900;letter-spacing:-.02em;margin:8px 0 0;line-height:1.1}
   .route{margin-top:9px;font:500 17px 'JetBrains Mono',monospace;color:var(--brand)}
 
-  /* 표지 */
-  .cover-slide{justify-content:center;color:#fff;
-    background:linear-gradient(150deg,#20214a 0%,#3a3a8f 46%,#5045a8 100%)}
+  /* 아키텍처 */
+  .arch{display:flex;gap:56px;flex:1;min-height:0}
+  .arch img{height:100%;width:auto;align-self:flex-start;
+    border:1px solid var(--line);border-radius:8px}
+  .arch-col{flex:1;display:flex;flex-direction:column;justify-content:flex-start;gap:26px;padding-top:4px}
+  .arch-item{border-left:3px solid;padding-left:17px}
+  .arch-item h3{margin:0;font-size:19px;font-weight:700;letter-spacing:-.01em}
+  .arch-item p{margin:7px 0 0;font-size:15px;line-height:1.66;color:var(--muted)}
+
+  /* 표지 — 좌표는 Figma 덱 표지와 동일하다 */
+  .cover-slide{padding:0;color:#fff;overflow:hidden;
+    background:linear-gradient(150deg,#191a3e 0%,#322d7a 58%,#5a4cbe 100%)}
   .cover-slide .pageno{color:#8d8fc4}
-  .cover-eyebrow{font:700 17px 'JetBrains Mono',monospace;color:#b9bffc;letter-spacing:.16em}
-  .cover h1{font-size:104px;font-weight:900;letter-spacing:-.035em;margin:22px 0 0;line-height:1}
-  .cover-sub{font-size:27px;color:#c3c6ef;margin-top:20px;font-weight:500}
-  .cover-meta{margin-top:72px;display:flex;flex-direction:column;gap:15px;
-    font:500 18px 'JetBrains Mono',monospace;color:#a4a7de}
-  .cover-meta span{display:inline-block;width:88px;color:#7477b4}
+  .cover-slide > div,.cover-slide > img{position:absolute}
+  .cv-tile{left:110px;top:132px;width:72px;height:72px;border-radius:18px;background:#fff;
+    display:flex;align-items:center;justify-content:center}
+  .cv-word{left:188px;top:136px;font-size:30px;font-weight:900;letter-spacing:-.03em}
+  .cv-latin{left:190px;top:176px;font:700 15px 'JetBrains Mono',monospace;
+    letter-spacing:.24em;color:#b9bffc}
+  .cv-eyebrow{left:110px;top:298px;font:700 17px 'JetBrains Mono',monospace;
+    color:#b9bffc;letter-spacing:.14em}
+  .cv-t1{left:110px;top:330px;font-size:104px;font-weight:900;letter-spacing:-.035em;line-height:1.08}
+  .cv-t2{left:110px;top:446px;font-size:104px;font-weight:900;letter-spacing:-.035em;
+    line-height:1.08;color:#a9aeef}
+  .cv-bar{left:110px;top:600px;width:96px;height:6px;border-radius:3px;background:#d2799b}
+  .cv-sub{left:110px;top:632px;width:840px;font-size:26px;font-weight:500;color:#c3c6ef;line-height:1.45}
+  .cv-meta{left:110px;top:722px;display:flex;flex-direction:column;gap:14px;
+    font:500 17px 'JetBrains Mono',monospace;color:#a4a7de}
+  .cv-meta span{display:inline-block;width:96px;color:#7477b4}
+  .cv-pills{left:110px;top:868px;display:flex;gap:10px}
+  .cv-pills span{padding:9px 16px;border-radius:20px;background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.24);font:500 15px 'JetBrains Mono',monospace;color:#fff}
+  .cv-ph{border-radius:20px;border:1px solid rgba(255,255,255,.2);
+    box-shadow:0 18px 46px rgba(8,6,32,.5);object-fit:cover}
+  .cv-ph1{left:1000px;top:248px;width:270px;height:584px;opacity:.9}
+  .cv-ph3{left:1530px;top:248px;width:270px;height:584px;opacity:.9}
+  .cv-ph2{left:1250px;top:205px;width:310px;height:671px}
+  .cv-cap{left:1000px;top:900px;width:800px;text-align:center;
+    font:500 14px 'JetBrains Mono',monospace;color:#8a8dc6}
 
   /* 본문 2단 */
   .body{display:grid;grid-template-columns:minmax(0,1fr) 690px;gap:48px;flex:1;min-height:0}
@@ -332,10 +411,6 @@ const html = `<!doctype html>
 </style></head>
 <body>${slides.join('\n')}</body></html>`;
 
-mkdirSync(SLIDE_DIR, { recursive: true });
-const htmlPath = join(OUT_DIR, '화면정의서.html');
-writeFileSync(htmlPath, html, 'utf8');
-console.log(`HTML  ${htmlPath}`);
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: W, height: H } });
@@ -351,11 +426,15 @@ await page.pdf({
 });
 console.log(`PDF   ${join(OUT_DIR, '화면정의서.pdf')} (${slides.length}장)`);
 
-// PNG — Figma·PPT로 가져다 쓰기 좋게 장당 파일로
-const els = await page.$$('.slide');
-for (let i = 0; i < els.length; i++) {
-  await els[i].screenshot({ path: join(SLIDE_DIR, `S${String(i + 1).padStart(2, '0')}.png`) });
+
+if (process.argv.includes('--preview')) {
+  const dir = process.env.PREVIEW_DIR ?? join(OUT_DIR, '.preview');
+  mkdirSync(dir, { recursive: true });
+  const els = await page.$$('.slide');
+  for (let i = 0; i < els.length; i++) {
+    await els[i].screenshot({ path: join(dir, `S${String(i + 1).padStart(2, '0')}.png`) });
+  }
+  console.log(`PNG   ${dir} (${els.length}장)`);
 }
-console.log(`PNG   ${SLIDE_DIR} (${els.length}장)`);
 
 await browser.close();
